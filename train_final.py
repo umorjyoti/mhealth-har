@@ -41,12 +41,21 @@ def main():
     cols = select_columns(F, y, names, groups, best.features, int(best.n_feat))
     print(f"config: {best.model} on {best.features} ({len(cols)} features)")
 
-    # out-of-fold predictions: one model per held-out subject
+    # Out-of-fold predictions, one model per held-out subject. The feature ranking is
+    # recomputed inside every fold: ranking once over all subjects lets the selection see
+    # the held-out person and inflates the reported score by ~1.4 points (check_leakage.py).
+    kind = best.features.split()[-1]
     oof = np.zeros_like(y)
     for tr, te in LeaveOneGroupOut().split(F, y, g):
-        sc = StandardScaler().fit(F[tr][:, cols])
-        clf = classical(best.model).fit(sc.transform(F[tr][:, cols]), y[tr])
-        oof[te] = clf.predict(sc.transform(F[te][:, cols]))
+        rank = classical("RandomForest").fit(StandardScaler().fit_transform(F[tr]), y[tr])
+        order = np.argsort(rank.feature_importances_)[::-1]
+        if kind in ("stat", "physics"):
+            fam = set(groups[kind])
+            order = np.array([i for i in order if i in fam])
+        fold_cols = order[:len(cols)] if kind != "physics)" else cols
+        sc = StandardScaler().fit(F[tr][:, fold_cols])
+        clf = classical(best.model).fit(sc.transform(F[tr][:, fold_cols]), y[tr])
+        oof[te] = clf.predict(sc.transform(F[te][:, fold_cols]))
 
     labels = list(ACTIVITIES)
     rep = classification_report(y, oof, labels=labels,

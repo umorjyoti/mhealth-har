@@ -73,12 +73,16 @@ protocol that discriminates; all numbers below are LOSO means over 10 subjects
 
 | Feature set | Model | Accuracy | Precision | Recall | Macro F1 |
 | --- | --- | --- | --- | --- | --- |
-| top-40 mixed | RandomForest | 0.979 | 0.980 | 0.980 | **0.977** |
-| top-20 statistical | RandomForest | 0.979 | 0.980 | 0.980 | 0.976 |
+| top-40 mixed | RandomForest | 0.979 | 0.980 | 0.980 | **0.977**\* |
+| top-20 statistical | RandomForest | 0.979 | 0.980 | 0.980 | 0.976\* |
 | stat + physics (197) | RandomForest | 0.978 | 0.979 | 0.979 | 0.976 |
 | statistical only (135) | RandomForest | 0.966 | 0.970 | 0.965 | 0.961 |
 | physics only (62) | RandomForest | 0.949 | 0.955 | 0.949 | 0.941 |
-| top-10 physics | SVM | 0.782 | 0.736 | 0.792 | 0.742 |
+| top-10 physics | SVM | 0.782 | 0.736 | 0.792 | 0.742\* |
+
+\* Rows marked with an asterisk use a feature ranking computed across all ten subjects,
+which flatters them by roughly 1.4 points. The three full-family rows involve no selection
+and need no such asterisk. The final model's headline score is the nested one, 0.964.
 
 Statistical features alone beat physics features alone (0.961 vs 0.941 with a random
 forest), but the two are complementary — the combined and mixed top-k sets are best on
@@ -114,13 +118,18 @@ leave-one-subject-out **out-of-fold** predictions, where every window is scored 
 model that never saw that subject:
 
 ```
-out-of-fold accuracy 0.978   macro precision 0.981   macro recall 0.980   macro F1 0.980
+out-of-fold accuracy 0.964   macro precision 0.967   macro recall 0.967   macro F1 0.967
 ```
 
+The feature ranking is recomputed **inside every fold**, from the nine training subjects
+alone. Ranking once across all ten subjects — which is what an earlier version of this
+script did — lets the selection glimpse each held-out person and inflates the score to
+0.978. That 1.4-point gap is measured in `check_leakage.py`.
+
 Per class (`results/final_report_loso.txt`, confusion in `results/final_confusion_loso.csv`):
-lying, walking, waist bends, arm elevation, cycling and jump are perfect; the only real
-confusions are standing vs sitting (sitting recall 0.900) and jogging vs running
-(running recall 0.917) — activity pairs that genuinely share a sensor signature.
+lying, walking, waist bends, arm elevation and jump are perfect. Two pairs account for 42
+of the 48 errors — standing vs sitting (23 windows traded) and jogging vs running (19) —
+activity pairs that genuinely share a sensor signature.
 
 Loading and predicting:
 
@@ -138,12 +147,40 @@ highest-importance mixed features, refit on all ten subjects — together with i
 and feature names. The selected set is dominated by ankle sensor features, plus body
 acceleration magnitude, jerk and gyroscope-change energy from the physics family.
 
+## Validity checks
+
+```bash
+.venv/bin/python check_leakage.py
+```
+
+Five perfect classes deserve suspicion, so four checks back the number up:
+
+| Check | Result | Expected if clean |
+| --- | --- | --- |
+| Every window's label shuffled | 0.102 | ~0.09 (chance) |
+| Each subject's activity blocks relabelled as units | 0.054 | ≤ 0.083 |
+| Subject present on both sides of a fold | never | never (asserted per fold) |
+| Feature ranking over all subjects vs nested | 0.978 vs 0.964 | equal |
+
+The two permutation tests are the ones that matter: if any test-subject information
+reached training, a model trained on scrambled labels would still beat chance. It does
+not, so the subject-wise split itself is sound. The fourth row is the one that failed,
+and the pipeline now uses the nested number everywhere.
+
 ## Caveats
 
 - 1335 windows total is small. The 40-window count for "jump front & back" (label 12)
   makes its per-class metrics noisy.
-- Per-subject LOSO scores range from 0.83 (subjects 6 and 8) to 1.00 (subjects 5, 7, 9, 10);
-  the mean hides real between-subject variation.
+- Per-subject scores range from 0.844 (subject 3) to 1.00 (subjects 5, 6, 7, 9, 10); the
+  mean hides real between-subject variation.
+- Each activity contributes ~111 windows, but they come from only ten people — about
+  eleven consecutive windows from one continuous minute per subject. The effective sample
+  size per class is ten, not 111, so confidence intervals are far wider than the window
+  count suggests.
+- The best configuration was chosen by looking at LOSO scores across 36 candidates, so the
+  headline carries some winner's-curse bias on top of everything above. The full-family
+  rows (statistical, physics, both) involve no selection at all and are the cleanest
+  comparison.
 - The random split leaks context between train and test — 5 s windows cut from one
   continuous 1-minute recording are near-duplicates. Treat its 1.00 scores as an upper
   bound, not a result.

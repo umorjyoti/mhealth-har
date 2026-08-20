@@ -1,0 +1,801 @@
+<title>Twelve Activities, Forty Features</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ink:#0F1417; --ink-2:#3B474C; --ink-3:#6C7B80;
+  --ground:#E7ECEB; --surface:#FBFCFC; --surface-2:#F1F5F4;
+  --line:#CCD7D5; --line-soft:#DFE7E6;
+  --accent:#0B6E68; --accent-soft:#0b6e6820;
+  --ax:#B84E2A; --ay:#0B6E68; --az:#98771F;
+  --good:#2C6E52; --warn:#9C5C13; --bad:#A63A2C;
+  --shadow:0 1px 2px rgba(15,20,23,.05), 0 8px 24px -16px rgba(15,20,23,.28);
+  --r:3px;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#DFE7E5; --ink-2:#9FB0AE; --ink-3:#71827F;
+    --ground:#0C1012; --surface:#141A1B; --surface-2:#1A2223;
+    --line:#283334; --line-soft:#1F2829;
+    --accent:#4FBDB2; --accent-soft:#4fbdb226;
+    --ax:#E07A52; --ay:#4FBDB2; --az:#C7A241;
+    --good:#5CB58C; --warn:#D69A4A; --bad:#DC7A68;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#DFE7E5; --ink-2:#9FB0AE; --ink-3:#71827F;
+  --ground:#0C1012; --surface:#141A1B; --surface-2:#1A2223;
+  --line:#283334; --line-soft:#1F2829;
+  --accent:#4FBDB2; --accent-soft:#4fbdb226;
+  --ax:#E07A52; --ay:#4FBDB2; --az:#C7A241;
+  --good:#5CB58C; --warn:#D69A4A; --bad:#DC7A68;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--f-display); font-variation-settings:"wdth" 112; text-wrap:balance; margin:0; line-height:1.12}
+h1{font-size:clamp(2.4rem,6vw,4rem); font-weight:700; letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3vw,2rem); font-weight:650; letter-spacing:-.015em}
+h3{font-size:1.05rem; font-weight:600; letter-spacing:-.005em}
+p{margin:0; max-width:68ch}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+
+.eyebrow{
+  font-family:var(--f-mono); font-size:.7rem; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+}
+.mono{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+.num{font-family:var(--f-mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+
+/* ---------- shell ---------- */
+.shell{display:grid; grid-template-columns:minmax(0,1fr); max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,40px)}
+@media(min-width:1000px){
+  .shell{grid-template-columns:190px minmax(0,1fr); gap:56px}
+}
+nav.rail{display:none}
+@media(min-width:1000px){
+  nav.rail{
+    display:block; position:sticky; top:0; align-self:start;
+    height:100vh; padding:40px 0; overflow-y:auto;
+  }
+  nav.rail ol{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:1px}
+  nav.rail a{
+    display:flex; gap:9px; align-items:baseline; text-decoration:none; color:var(--ink-3);
+    font-size:.82rem; padding:4px 8px 4px 0; border-left:2px solid transparent; padding-left:10px;
+    transition:color .18s, border-color .18s;
+  }
+  nav.rail a span{font-family:var(--f-mono); font-size:.68rem; opacity:.65}
+  nav.rail a:hover{color:var(--ink)}
+  nav.rail a.on{color:var(--ink); border-left-color:var(--accent); font-weight:500}
+}
+main{padding:0 0 120px; min-width:0}
+section{padding:64px 0 8px; scroll-margin-top:24px}
+.lede{color:var(--ink-2); margin-top:14px; font-size:1.02rem}
+.head{display:flex; flex-direction:column; gap:8px; margin-bottom:28px}
+
+/* ---------- hero ---------- */
+header.hero{padding:clamp(48px,9vh,96px) 0 12px; border-bottom:1px solid var(--line-soft)}
+.hero .sub{color:var(--ink-2); margin-top:18px; font-size:1.08rem; max-width:60ch}
+.trace{width:100%; height:118px; margin:30px 0 4px; display:block; overflow:visible}
+.trace path{fill:none; stroke-width:1.6; stroke-linejoin:round; stroke-linecap:round}
+.kpis{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:1px; background:var(--line-soft); border:1px solid var(--line-soft);
+  margin:26px 0 40px; border-radius:var(--r); overflow:hidden;
+}
+.kpi{background:var(--surface); padding:16px 18px; display:flex; flex-direction:column; gap:5px}
+.kpi b{font-family:var(--f-mono); font-size:1.62rem; font-weight:500; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.kpi span{font-size:.72rem; color:var(--ink-3); letter-spacing:.05em; text-transform:uppercase; font-family:var(--f-mono)}
+
+/* ---------- panels ---------- */
+.panel{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--r); box-shadow:var(--shadow)}
+.panel-h{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--line-soft)}
+.panel-b{padding:18px}
+.scroller{overflow-x:auto}
+
+/* ---------- controls ---------- */
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface-2)}
+.seg button{
+  appearance:none; border:0; background:transparent; cursor:pointer; color:var(--ink-2);
+  font-family:var(--f-mono); font-size:.74rem; letter-spacing:.04em; padding:6px 11px;
+  border-right:1px solid var(--line); transition:background .16s,color .16s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"],
+:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#08110F}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .seg button[aria-pressed="true"]{color:#fff}}
+.chip{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--f-mono); font-size:.7rem;
+  padding:3px 8px; border:1px solid var(--line); border-radius:100px; color:var(--ink-2);
+}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+
+/* ---------- pipeline ---------- */
+.pipe{display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:var(--r); overflow:hidden}
+@media(min-width:700px){.pipe{grid-template-columns:repeat(2,1fr)}}
+.step{
+  background:var(--surface); border:0; text-align:left; cursor:pointer; font:inherit; color:inherit;
+  display:flex; gap:12px; align-items:flex-start; padding:12px 14px; transition:background .16s;
+  position:relative;
+}
+.step:hover{background:var(--surface-2)}
+.step[aria-pressed="true"]{background:var(--accent-soft)}
+.step[aria-pressed="true"]::before{content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--accent)}
+.step i{font-family:var(--f-mono); font-style:normal; font-size:.72rem; color:var(--ink-3); padding-top:3px; min-width:18px}
+.step b{font-weight:500; font-size:.92rem}
+.step em{display:block; font-style:normal; font-size:.76rem; color:var(--ink-3); font-family:var(--f-mono)}
+.stepdetail{margin-top:14px; padding:16px 18px; border-left:2px solid var(--accent); background:var(--surface); border-radius:0 var(--r) var(--r) 0}
+.stepdetail h3{margin-bottom:6px}
+.stepdetail p{color:var(--ink-2); font-size:.94rem}
+.stepdetail code{font-family:var(--f-mono); font-size:.82rem; background:var(--surface-2); padding:1px 5px; border-radius:2px}
+
+/* ---------- signal lab ---------- */
+.lab{display:grid; gap:18px}
+@media(min-width:860px){.lab{grid-template-columns:minmax(0,1fr) 232px}}
+.lanes{display:flex; flex-direction:column; gap:10px}
+.lane{border:1px solid var(--line-soft); border-radius:var(--r); background:var(--surface-2); padding:8px 10px 4px}
+.lane header{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:2px}
+.lane h4{font-size:.78rem; font-family:var(--f-mono); font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2)}
+.lane p{font-size:.72rem; color:var(--ink-3); margin:0; text-align:right}
+.lane svg{width:100%; height:78px; display:block; overflow:visible}
+.lane svg path{fill:none; stroke-width:1.5; stroke-linejoin:round}
+.readouts{display:flex; flex-direction:column; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:var(--r); overflow:hidden; align-self:start}
+.ro{background:var(--surface); padding:9px 12px; display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.ro span{font-size:.72rem; color:var(--ink-3); font-family:var(--f-mono)}
+.ro b{font-family:var(--f-mono); font-weight:500; font-size:.92rem; font-variant-numeric:tabular-nums}
+
+/* ---------- feature catalogue ---------- */
+.cats{display:grid; gap:14px}
+@media(min-width:760px){.cats{grid-template-columns:1fr 1fr}}
+.cat{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--r); padding:16px 18px}
+.cat h3{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px}
+.cat h3 em{font-style:normal; font-family:var(--f-mono); font-size:.74rem; color:var(--ink-3)}
+.tags{display:flex; flex-wrap:wrap; gap:5px}
+.tag{
+  font-family:var(--f-mono); font-size:.7rem; padding:3px 7px; border-radius:2px;
+  background:var(--surface-2); border:1px solid var(--line-soft); color:var(--ink-2);
+}
+.tag.hi{border-color:var(--accent); color:var(--accent)}
+
+/* ---------- bars ---------- */
+.bars{display:flex; flex-direction:column; gap:3px}
+.bar{display:grid; grid-template-columns:minmax(120px,164px) minmax(0,1fr) 52px; gap:10px; align-items:center; font-size:.8rem}
+.bar .lbl{font-family:var(--f-mono); font-size:.72rem; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.track{display:block; height:16px; background:var(--surface-2); border-radius:2px; overflow:hidden}
+.fill{display:block; height:100%; width:0; border-radius:2px; transition:width .55s cubic-bezier(.22,.61,.36,1), background .2s}
+.bar .val{font-family:var(--f-mono); font-size:.74rem; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-2)}
+.bar.top .val{color:var(--ink); font-weight:600}
+
+/* ---------- tables ---------- */
+table{border-collapse:collapse; width:100%; font-size:.85rem}
+th,td{text-align:right; padding:7px 10px; border-bottom:1px solid var(--line-soft); white-space:nowrap}
+th{font-family:var(--f-mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3); font-weight:500}
+td:first-child,th:first-child{text-align:left}
+td.n{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surface-2)}
+
+/* ---------- confusion ---------- */
+.cmgrid{display:grid; gap:2px; align-items:stretch; min-width:560px}
+.cell{
+  aspect-ratio:1; border-radius:2px; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.62rem; cursor:default; transition:outline-color .12s;
+  outline:1px solid transparent; min-width:0;
+}
+.cell.z{background:var(--surface-2); color:var(--ink-3)}
+.cell.hot{outline-color:var(--ink)}
+.rowlab{
+  display:flex; align-items:center; justify-content:flex-end; padding-right:7px;
+  font-family:var(--f-mono); font-size:.66rem; color:var(--ink-2); white-space:nowrap;
+}
+.collab{
+  writing-mode:vertical-rl; text-orientation:mixed; font-family:var(--f-mono);
+  font-size:.6rem; color:var(--ink-3); height:70px; padding-top:4px;
+}
+
+/* ---------- invariance strip ---------- */
+.strip{position:relative; height:132px; border:1px solid var(--line-soft); border-radius:var(--r); background:var(--surface-2); overflow:hidden}
+.strip svg{width:100%; height:100%; display:block}
+.strip circle{cursor:pointer}
+.tip{
+  position:absolute; pointer-events:none; background:var(--ink); color:var(--ground);
+  font-family:var(--f-mono); font-size:.68rem; padding:4px 7px; border-radius:2px; opacity:0;
+  transition:opacity .12s; transform:translate(-50%,-140%); white-space:nowrap; z-index:5;
+}
+.legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px}
+
+/* ---------- callout ---------- */
+.callout{
+  border-left:2px solid var(--accent); background:var(--surface); padding:14px 18px;
+  border-radius:0 var(--r) var(--r) 0; margin-top:20px;
+}
+.callout p{font-size:.94rem; color:var(--ink-2)}
+.callout strong{color:var(--ink); font-weight:600}
+.grid2{display:grid; gap:16px}
+@media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+
+footer{border-top:1px solid var(--line-soft); margin-top:60px; padding:26px 0; color:var(--ink-3); font-size:.82rem}
+.reveal{opacity:0; transform:translateY(10px); transition:opacity .6s ease, transform .6s cubic-bezier(.22,.61,.36,1)}
+.reveal.in{opacity:1; transform:none}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1; transform:none; transition:none}
+  .fill{transition:none}
+  *{animation-duration:.001ms !important}
+}
+</style>
+
+<div class="shell">
+<nav class="rail" aria-label="Sections">
+  <div class="eyebrow">MHEALTH&nbsp;HAR</div>
+  <ol id="railList"></ol>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">Human activity recognition &#183; 10 subjects &#183; 50&nbsp;Hz body sensors</div>
+  <h1>Twelve activities,<br>forty features.</h1>
+  <p class="sub">A compact recognition pipeline built on the MHEALTH dataset: 5-second windows of chest, ankle and wrist motion, reduced to 197 handcrafted numbers, pruned to 40, and classified at 96.4% accuracy on subjects the model has never seen &#8212; measured with feature selection nested inside every fold.</p>
+  <svg class="trace" id="heroTrace" viewBox="0 0 1000 118" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<section id="pipeline">
+  <div class="head">
+    <div class="eyebrow">The pipeline</div>
+    <h2>Fourteen steps, raw log to compact model</h2>
+    <p class="lede">Each stage is a real code path. Select one to see what it does and what it costs.</p>
+  </div>
+  <div class="pipe" id="pipe"></div>
+  <div class="stepdetail" id="stepDetail"></div>
+</section>
+
+<section id="signals">
+  <div class="head">
+    <div class="eyebrow">Handcrafted features</div>
+    <h2>What a physics feature actually sees</h2>
+    <p class="lede">Every window of ankle acceleration is split by a 0.3&nbsp;Hz low-pass filter into the gravity component and the body motion left behind, then differentiated into jerk. These are real windows from the dataset &#8212; pick an activity and watch the decomposition redraw.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-h">
+      <div class="seg" id="actSeg" role="group" aria-label="Activity"></div>
+      <div class="seg" id="axisSeg" role="group" aria-label="Axis">
+        <button data-axis="0" aria-pressed="true">X</button>
+        <button data-axis="1" aria-pressed="true">Y</button>
+        <button data-axis="2" aria-pressed="true">Z</button>
+      </div>
+    </div>
+    <div class="panel-b lab">
+      <div class="lanes" id="lanes"></div>
+      <div class="readouts" id="readouts"></div>
+    </div>
+  </div>
+  <div class="callout">
+    <p><strong>Standing to running, the same five numbers move by orders of magnitude.</strong> Jerk energy climbs from 158 to 849,034; body-acceleration energy from 0.03 to 333. Gravity magnitude barely moves for a still subject and scatters wildly for a running one &#8212; that spread is exactly what the classifier keys on.</p>
+  </div>
+</section>
+
+<section id="catalogue">
+  <div class="head">
+    <div class="eyebrow">The feature set</div>
+    <h2>197 numbers per five-second window</h2>
+    <p class="lede">Nine statistics across all fifteen channels, plus physics quantities computed per sensor triad. Highlighted tags are among the forty the final model kept.</p>
+  </div>
+  <div class="cats" id="cats"></div>
+</section>
+
+<section id="importance">
+  <div class="head">
+    <div class="eyebrow">Feature analysis</div>
+    <h2>What the forest leans on</h2>
+    <p class="lede">Gini importance from a random forest, after 72 of 197 features were dropped for being more than 95% correlated with one already kept. The ankle carries the signal.</p>
+  </div>
+  <div class="panel"><div class="panel-b"><div class="bars" id="impBars"></div></div></div>
+</section>
+
+<section id="ablation">
+  <div class="head">
+    <div class="eyebrow">Results</div>
+    <h2>Which features actually win</h2>
+    <p class="lede">Thirty-six configurations, each scored by leave-one-subject-out: ten folds, every fold tested on a person the model never trained on. Sort by any metric, or filter to one classifier.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-h">
+      <div class="seg" id="metricSeg" role="group" aria-label="Metric">
+        <button data-m="f1" aria-pressed="true">F1</button>
+        <button data-m="accuracy">Accuracy</button>
+        <button data-m="precision">Precision</button>
+        <button data-m="recall">Recall</button>
+        <button data-m="worst_subject_f1">Worst subject</button>
+      </div>
+      <div class="seg" id="modelSeg" role="group" aria-label="Model">
+        <button data-model="all" aria-pressed="true">All</button>
+        <button data-model="RandomForest">Forest</button>
+        <button data-model="SVM">SVM</button>
+        <button data-model="MLP">MLP</button>
+      </div>
+    </div>
+    <div class="panel-b"><div class="bars" id="abBars"></div></div>
+  </div>
+  <div class="legend">
+    <span class="chip"><i class="dot" style="background:var(--ay)"></i>statistical</span>
+    <span class="chip"><i class="dot" style="background:var(--ax)"></i>physics</span>
+    <span class="chip"><i class="dot" style="background:var(--az)"></i>mixed / combined</span>
+  </div>
+  <div class="callout">
+    <p><strong>Statistics beat physics alone; together they beat both.</strong> Statistical features carry more raw discriminative power (0.961 vs 0.941 macro F1 with a random forest), but the top-40 mixed set wins every metric &#8212; and does it with a fifth of the features. Random forests dominate SVM and MLP at every feature count.</p><p style="margin-top:10px"><strong>Read the top-k rows with care.</strong> Their feature ranking was computed once across all ten subjects, which flatters them by roughly a point and a half. The three full-family rows &#8212; statistical, physics, and both &#8212; involve no selection at all and are the honest comparison.</p>
+  </div>
+</section>
+
+<section id="splits">
+  <div class="head">
+    <div class="eyebrow">Evaluation protocol</div>
+    <h2>Why the random split had to be thrown out</h2>
+    <p class="lede">Five-second windows cut from one continuous minute of recording are near-duplicates. Split them at random and train and test share the same moments &#8212; every feature family scores a perfect 1.000 and the comparison tells you nothing.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-h"><h3>Handcrafted features</h3><span class="chip">stat + physics, forest</span></div>
+      <div class="panel-b"><div class="bars" id="splitA"></div></div></div>
+    <div class="panel"><div class="panel-h"><h3>1D CNN on raw signal</h3><span class="chip">baseline</span></div>
+      <div class="panel-b"><div class="bars" id="splitB"></div></div></div>
+  </div>
+  <div class="callout">
+    <p><strong>The CNN drops 0.113 macro F1 when it meets a new person; the handcrafted features lose almost nothing.</strong> With 1,335 windows from ten people, the network partly learns who is moving rather than how they move. Handcrafted features do not have that option.</p>
+  </div>
+</section>
+
+<section id="invariance">
+  <div class="head">
+    <div class="eyebrow">Feature invariance</div>
+    <h2>Which features survive a new body</h2>
+    <p class="lede">Each dot is one feature, placed by how far its within-activity average drifts between subjects relative to its overall spread. Left is invariant; right changes with whoever is wearing the sensor. Hover any dot.</p>
+  </div>
+  <div class="strip" id="strip"><div class="tip" id="tip"></div></div>
+  <div class="legend">
+    <span class="chip"><i class="dot" style="background:var(--ax)"></i>physics &#183; mean 0.754</span>
+    <span class="chip"><i class="dot" style="background:var(--ay)"></i>statistical &#183; mean 0.876</span>
+  </div>
+  <div class="callout">
+    <p><strong>The six most subject-invariant features in the whole set are all physics ones</strong> &#8212; gravity-magnitude spread and tilt-angle spread at the ankle, wrist and chest. They describe how the sensor sits and swings against gravity, which is a property of the movement, not of the mover.</p>
+  </div>
+</section>
+
+<section id="leakage">
+  <div class="head">
+    <div class="eyebrow">Validity checks</div>
+    <h2>Is any of this leaking?</h2>
+    <p class="lede">Five activities scoring a perfect 1.000 is the kind of result that should be doubted before it is published. Four checks, all reproducible by <span class="mono">check_leakage.py</span>.</p>
+  </div>
+  <div class="panel scroller">
+    <table>
+      <thead><tr><th>check</th><th>result</th><th>expected if clean</th><th>verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Every window&#8217;s label shuffled</td><td class="n">0.102</td><td class="n">~0.09</td><td style="text-align:left;color:var(--good)">at chance</td></tr>
+        <tr><td>Each subject&#8217;s activity blocks relabelled</td><td class="n">0.054</td><td class="n">&#8804; 0.083</td><td style="text-align:left;color:var(--good)">at chance</td></tr>
+        <tr><td>Subject on both sides of a fold</td><td class="n">never</td><td class="n">never</td><td style="text-align:left;color:var(--good)">asserted per fold</td></tr>
+        <tr><td>Feature ranking computed on all subjects</td><td class="n">0.978</td><td class="n">0.964</td><td style="text-align:left;color:var(--warn)">inflated by 1.4 pts</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <p><strong>The split is clean; the feature selection was not.</strong> If test-subject information reached training, a model fed scrambled labels would still beat chance &#8212; it does not, in either permutation. But ranking the top 40 features once across all ten subjects let the selection glimpse each held-out person, and that alone was worth 1.4 points. Every number on this page now comes from a ranking recomputed inside each fold.</p>
+  </div>
+  <div class="callout">
+    <p><strong>What the perfect classes really rest on.</strong> Each activity contributes about 111 windows, but they come from only ten people &#8212; roughly eleven consecutive windows cut from one continuous minute per subject. Ten independent observations per class, not 111. A perfect 1.000 on lying means ten people&#8217;s lying blocks were all classified correctly, which is a much smaller claim than the window count suggests.</p>
+  </div>
+</section>
+
+<section id="report">
+  <div class="head">
+    <div class="eyebrow">Final model report</div>
+    <h2>Random forest, 40 features, out-of-fold</h2>
+    <p class="lede">Every window below was classified by a model trained without that window's subject &#8212; and with its own feature ranking, recomputed from the nine training subjects alone. Five activities are recognised perfectly; the errors sit in two pairs that genuinely share a signature.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-h"><h3>Confusion matrix</h3><span class="chip" id="cmHint">rows: true &#183; columns: predicted</span></div>
+    <div class="panel-b scroller"><div id="cm"></div></div>
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="panel"><div class="panel-h"><h3>Per activity</h3></div>
+      <div class="panel-b scroller"><table id="pcTable"></table></div></div>
+    <div class="panel"><div class="panel-h"><h3>Per held-out subject</h3></div>
+      <div class="panel-b"><div class="bars" id="subjBars"></div></div></div>
+  </div>
+  <div class="callout">
+    <p><strong>Two pairs account for 42 of the 48 errors.</strong> Standing and sitting trade 23 windows, jogging and running trade 19 &#8212; both pairs are near-identical at the chest and ankle. Subject 3 is the hardest person in the set at 0.844 macro F1; six of the ten subjects are still classified perfectly.</p>
+  </div>
+</section>
+
+<section id="efficiency">
+  <div class="head">
+    <div class="eyebrow">Efficiency</div>
+    <h2>What it costs to run</h2>
+    <p class="lede">Measured on CPU, per five-second window.</p>
+  </div>
+  <div class="panel scroller"><table id="effTable"></table></div>
+  <div class="callout">
+    <p><strong>The compact model is roughly five times cheaper at inference than the CNN baseline that scores worse on new subjects.</strong> Extracting all 197 features costs 0.37&nbsp;ms; the 40 the model keeps are a subset of that work.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Built on the MHEALTH dataset (Banos et&nbsp;al., IWAAL 2014): 10 subjects, 12 activities, Shimmer2 sensors at the chest, left ankle and right wrist, sampled at 50&nbsp;Hz. ECG and magnetometer channels excluded. All figures are reproduced by <span class="mono">run.py</span>, <span class="mono">loso_ablation.py</span> and <span class="mono">train_final.py</span>.</p>
+</footer>
+</main>
+</div>
+
+<script>
+const D = {"ablation":[{"features":"top40 mixed","n_feat":40,"model":"RandomForest","accuracy":0.9789,"precision":0.9786,"recall":0.9799,"f1":0.9767,"f1_std":0.0418,"worst_subject_f1":0.8603},{"features":"top20 stat","n_feat":20,"model":"RandomForest","accuracy":0.9789,"precision":0.9796,"recall":0.9799,"f1":0.9759,"f1_std":0.0463,"worst_subject_f1":0.8526},{"features":"stat+physics (197)","n_feat":197,"model":"RandomForest","accuracy":0.9781,"precision":0.9786,"recall":0.9792,"f1":0.9756,"f1_std":0.0394,"worst_subject_f1":0.8749},{"features":"top40 stat","n_feat":40,"model":"RandomForest","accuracy":0.9683,"precision":0.9742,"recall":0.9675,"f1":0.9623,"f1_std":0.0512,"worst_subject_f1":0.8444},{"features":"top20 mixed","n_feat":20,"model":"RandomForest","accuracy":0.9654,"precision":0.9625,"recall":0.9674,"f1":0.9612,"f1_std":0.0486,"worst_subject_f1":0.8526},{"features":"stat-only (135)","n_feat":135,"model":"RandomForest","accuracy":0.9655,"precision":0.9703,"recall":0.9655,"f1":0.961,"f1_std":0.0415,"worst_subject_f1":0.8819},{"features":"top10 stat","n_feat":10,"model":"SVM","accuracy":0.9633,"precision":0.9627,"recall":0.9653,"f1":0.958,"f1_std":0.0573,"worst_subject_f1":0.8264},{"features":"top20 mixed","n_feat":20,"model":"SVM","accuracy":0.959,"precision":0.954,"recall":0.9611,"f1":0.9508,"f1_std":0.0592,"worst_subject_f1":0.8358},{"features":"stat+physics (197)","n_feat":197,"model":"SVM","accuracy":0.9575,"precision":0.9575,"recall":0.9556,"f1":0.9482,"f1_std":0.0621,"worst_subject_f1":0.8056},{"features":"top10 stat","n_feat":10,"model":"RandomForest","accuracy":0.9529,"precision":0.9472,"recall":0.9552,"f1":0.9455,"f1_std":0.0612,"worst_subject_f1":0.8358},{"features":"top40 mixed","n_feat":40,"model":"SVM","accuracy":0.9518,"precision":0.957,"recall":0.9549,"f1":0.9448,"f1_std":0.0595,"worst_subject_f1":0.8444},{"features":"stat+physics (197)","n_feat":197,"model":"MLP","accuracy":0.9504,"precision":0.9498,"recall":0.9497,"f1":0.941,"f1_std":0.0614,"worst_subject_f1":0.8389},{"features":"physics-only (62)","n_feat":62,"model":"RandomForest","accuracy":0.9489,"precision":0.9547,"recall":0.9494,"f1":0.941,"f1_std":0.0482,"worst_subject_f1":0.8782},{"features":"top40 physics","n_feat":40,"model":"RandomForest","accuracy":0.9483,"precision":0.9541,"recall":0.9501,"f1":0.941,"f1_std":0.0598,"worst_subject_f1":0.8059},{"features":"top40 mixed","n_feat":40,"model":"MLP","accuracy":0.9494,"precision":0.9409,"recall":0.9528,"f1":0.94,"f1_std":0.055,"worst_subject_f1":0.8677},{"features":"top20 stat","n_feat":20,"model":"SVM","accuracy":0.9472,"precision":0.9473,"recall":0.9501,"f1":0.9371,"f1_std":0.0743,"worst_subject_f1":0.7922},{"features":"top40 stat","n_feat":40,"model":"SVM","accuracy":0.9477,"precision":0.9569,"recall":0.9478,"f1":0.9366,"f1_std":0.0625,"worst_subject_f1":0.8264},{"features":"top20 mixed","n_feat":20,"model":"MLP","accuracy":0.9421,"precision":0.9498,"recall":0.9447,"f1":0.9351,"f1_std":0.0642,"worst_subject_f1":0.8213},{"features":"stat-only (135)","n_feat":135,"model":"SVM","accuracy":0.9413,"precision":0.9404,"recall":0.941,"f1":0.9343,"f1_std":0.0685,"worst_subject_f1":0.8056},{"features":"top40 physics","n_feat":40,"model":"SVM","accuracy":0.9449,"precision":0.9475,"recall":0.9458,"f1":0.9341,"f1_std":0.0532,"worst_subject_f1":0.8603},{"features":"top20 physics","n_feat":20,"model":"RandomForest","accuracy":0.941,"precision":0.9421,"recall":0.9452,"f1":0.9337,"f1_std":0.0522,"worst_subject_f1":0.8693},{"features":"top40 stat","n_feat":40,"model":"MLP","accuracy":0.9414,"precision":0.9332,"recall":0.9431,"f1":0.9309,"f1_std":0.066,"worst_subject_f1":0.8087},{"features":"top20 stat","n_feat":20,"model":"MLP","accuracy":0.9363,"precision":0.9338,"recall":0.94,"f1":0.9254,"f1_std":0.0487,"worst_subject_f1":0.8526},{"features":"top10 stat","n_feat":10,"model":"MLP","accuracy":0.9332,"precision":0.9363,"recall":0.9357,"f1":0.9225,"f1_std":0.0645,"worst_subject_f1":0.8264},{"features":"top20 physics","n_feat":20,"model":"SVM","accuracy":0.9283,"precision":0.9214,"recall":0.9312,"f1":0.9172,"f1_std":0.0573,"worst_subject_f1":0.8358},{"features":"top40 physics","n_feat":40,"model":"MLP","accuracy":0.9259,"precision":0.9115,"recall":0.9292,"f1":0.9115,"f1_std":0.0631,"worst_subject_f1":0.7778},{"features":"stat-only (135)","n_feat":135,"model":"MLP","accuracy":0.9152,"precision":0.9088,"recall":0.9177,"f1":0.9011,"f1_std":0.0552,"worst_subject_f1":0.8056},{"features":"physics-only (62)","n_feat":62,"model":"MLP","accuracy":0.9113,"precision":0.9045,"recall":0.9139,"f1":0.9001,"f1_std":0.0821,"worst_subject_f1":0.7292},{"features":"physics-only (62)","n_feat":62,"model":"SVM","accuracy":0.9098,"precision":0.9012,"recall":0.9146,"f1":0.8967,"f1_std":0.0758,"worst_subject_f1":0.7778},{"features":"top20 physics","n_feat":20,"model":"MLP","accuracy":0.8985,"precision":0.8823,"recall":0.9063,"f1":0.8859,"f1_std":0.0525,"worst_subject_f1":0.791},{"features":"top10 mixed","n_feat":10,"model":"RandomForest","accuracy":0.8733,"precision":0.8834,"recall":0.8815,"f1":0.8683,"f1_std":0.0567,"worst_subject_f1":0.788},{"features":"top10 physics","n_feat":10,"model":"RandomForest","accuracy":0.8422,"precision":0.8533,"recall":0.8532,"f1":0.8377,"f1_std":0.0718,"worst_subject_f1":0.7128},{"features":"top10 mixed","n_feat":10,"model":"MLP","accuracy":0.8268,"precision":0.8265,"recall":0.8353,"f1":0.8074,"f1_std":0.0802,"worst_subject_f1":0.704},{"features":"top10 mixed","n_feat":10,"model":"SVM","accuracy":0.818,"precision":0.7786,"recall":0.8279,"f1":0.7876,"f1_std":0.0469,"worst_subject_f1":0.7404},{"features":"top10 physics","n_feat":10,"model":"MLP","accuracy":0.7999,"precision":0.7783,"recall":0.8105,"f1":0.7731,"f1_std":0.0562,"worst_subject_f1":0.6714},{"features":"top10 physics","n_feat":10,"model":"SVM","accuracy":0.7822,"precision":0.7363,"recall":0.7918,"f1":0.7425,"f1_std":0.0439,"worst_subject_f1":0.6708}],"splits":[{"split":"random","features":"stat-only","model":"SVM","n_feat":135,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.1253,"size_kb":370.0781},{"split":"random","features":"stat-only","model":"RandomForest","n_feat":135,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.748,"size_kb":2418.9189},{"split":"random","features":"stat-only","model":"MLP","n_feat":135,"accuracy":0.9925,"precision":0.9933,"recall":0.9931,"f1":0.9931,"infer_ms_per_window":0.0107,"size_kb":627.8691},{"split":"random","features":"physics-only","model":"SVM","n_feat":62,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0723,"size_kb":167.4844},{"split":"random","features":"physics-only","model":"RandomForest","n_feat":62,"accuracy":0.9963,"precision":0.9967,"recall":0.9965,"f1":0.9965,"infer_ms_per_window":0.8489,"size_kb":3092.7568},{"split":"random","features":"physics-only","model":"MLP","n_feat":62,"accuracy":0.9513,"precision":0.9603,"recall":0.9549,"f1":0.9543,"infer_ms_per_window":0.0213,"size_kb":408.7324},{"split":"random","features":"stat+physics","model":"SVM","n_feat":197,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.198,"size_kb":523.9336},{"split":"random","features":"stat+physics","model":"RandomForest","n_feat":197,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.92,"size_kb":2123.5713},{"split":"random","features":"stat+physics","model":"MLP","n_feat":197,"accuracy":0.9738,"precision":0.9777,"recall":0.9688,"f1":0.9718,"infer_ms_per_window":0.0279,"size_kb":813.7871},{"split":"random","features":"selected-top20","model":"SVM","n_feat":20,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0413,"size_kb":44.7539},{"split":"random","features":"selected-top20","model":"RandomForest","n_feat":20,"accuracy":0.9963,"precision":0.9967,"recall":0.9965,"f1":0.9965,"infer_ms_per_window":0.8771,"size_kb":2297.9639},{"split":"random","features":"selected-top20","model":"MLP","n_feat":20,"accuracy":0.97,"precision":0.9739,"recall":0.9653,"f1":0.9685,"infer_ms_per_window":0.009,"size_kb":283.2852},{"split":"random","features":"raw signal","model":"1D CNN","n_feat":3750,"accuracy":0.9963,"precision":0.9967,"recall":0.9965,"f1":0.9965,"infer_ms_per_window":1.2813,"size_kb":159.5469},{"split":"subject-wise","features":"stat-only","model":"SVM","n_feat":135,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0451,"size_kb":327.7305},{"split":"subject-wise","features":"stat-only","model":"RandomForest","n_feat":135,"accuracy":0.9962,"precision":0.996,"recall":0.9962,"f1":0.996,"infer_ms_per_window":0.1984,"size_kb":2209.2051},{"split":"subject-wise","features":"stat-only","model":"MLP","n_feat":135,"accuracy":0.9848,"precision":0.9868,"recall":0.9848,"f1":0.9847,"infer_ms_per_window":0.002,"size_kb":628.0635},{"split":"subject-wise","features":"physics-only","model":"SVM","n_feat":62,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0289,"size_kb":151.4062},{"split":"subject-wise","features":"physics-only","model":"RandomForest","n_feat":62,"accuracy":0.9962,"precision":0.9967,"recall":0.9965,"f1":0.9965,"infer_ms_per_window":0.2383,"size_kb":2651.7578},{"split":"subject-wise","features":"physics-only","model":"MLP","n_feat":62,"accuracy":0.9545,"precision":0.9722,"recall":0.9583,"f1":0.9556,"infer_ms_per_window":0.0019,"size_kb":408.8164},{"split":"subject-wise","features":"stat+physics","model":"SVM","n_feat":197,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0599,"size_kb":492.9844},{"split":"subject-wise","features":"stat+physics","model":"RandomForest","n_feat":197,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.2388,"size_kb":1993.5537},{"split":"subject-wise","features":"stat+physics","model":"MLP","n_feat":197,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0022,"size_kb":813.5977},{"split":"subject-wise","features":"selected-top125","model":"SVM","n_feat":125,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.0539,"size_kb":341.8008},{"split":"subject-wise","features":"selected-top125","model":"RandomForest","n_feat":125,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0,"infer_ms_per_window":0.2027,"size_kb":2197.3301},{"split":"subject-wise","features":"selected-top125","model":"MLP","n_feat":125,"accuracy":0.9962,"precision":0.9964,"recall":0.9965,"f1":0.9964,"infer_ms_per_window":0.0021,"size_kb":597.707},{"split":"subject-wise","features":"raw signal","model":"1D CNN","n_feat":3750,"accuracy":0.8826,"precision":0.8823,"recall":0.8864,"f1":0.8832,"infer_ms_per_window":1.0849,"size_kb":159.5469}],"cm":{"labels":["standing","sitting","lying","walking","stairs","waist_bend","arm_elevation","knee_bend","cycling","jogging","running","jump"],"m":[[109,11,0,0,0,0,0,0,0,0,0,0],[12,108,0,0,0,0,0,0,0,0,0,0],[0,0,120,0,0,0,0,0,0,0,0,0],[0,0,0,120,0,0,0,0,0,0,0,0],[0,0,0,0,119,0,0,1,0,0,0,0],[0,0,0,0,0,108,0,0,0,0,0,0],[0,0,0,0,0,0,115,0,0,0,0,0],[0,0,0,0,2,0,0,110,0,0,0,0],[0,0,0,0,0,0,0,3,117,0,0,0],[0,0,0,0,0,0,0,0,0,113,7,0],[0,0,0,0,0,0,0,0,0,12,108,0],[0,0,0,0,0,0,0,0,0,0,0,40]]},"perclass":[{"label":"standing","support":120,"precision":0.901,"recall":0.908,"f1":0.905},{"label":"sitting","support":120,"precision":0.908,"recall":0.9,"f1":0.904},{"label":"lying","support":120,"precision":1.0,"recall":1.0,"f1":1.0},{"label":"walking","support":120,"precision":1.0,"recall":1.0,"f1":1.0},{"label":"stairs","support":120,"precision":0.983,"recall":0.992,"f1":0.988},{"label":"waist_bend","support":108,"precision":1.0,"recall":1.0,"f1":1.0},{"label":"arm_elevation","support":115,"precision":1.0,"recall":1.0,"f1":1.0},{"label":"knee_bend","support":112,"precision":0.965,"recall":0.982,"f1":0.973},{"label":"cycling","support":120,"precision":1.0,"recall":0.975,"f1":0.987},{"label":"jogging","support":120,"precision":0.904,"recall":0.942,"f1":0.922},{"label":"running","support":120,"precision":0.939,"recall":0.9,"f1":0.919},{"label":"jump","support":40,"precision":1.0,"recall":1.0,"f1":1.0}],"per_subject":[{"subject":1,"accuracy":0.985,"precision":0.987,"recall":0.987,"f1":0.986},{"subject":2,"accuracy":0.957,"precision":0.97,"recall":0.958,"f1":0.957},{"subject":3,"accuracy":0.869,"precision":0.847,"recall":0.875,"f1":0.844},{"subject":4,"accuracy":0.949,"precision":0.969,"recall":0.951,"f1":0.947},{"subject":5,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0},{"subject":6,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0},{"subject":7,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0},{"subject":8,"accuracy":0.885,"precision":0.933,"recall":0.894,"f1":0.873},{"subject":9,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0},{"subject":10,"accuracy":1.0,"precision":1.0,"recall":1.0,"f1":1.0}],"invariance":[{"f":"ankle_acc_grav_mag_std","s":0.34,"fam":"physics"},{"f":"arm_acc_grav_mag_std","s":0.37,"fam":"physics"},{"f":"chest_acc_grav_mag_std","s":0.383,"fam":"physics"},{"f":"ankle_acc_tilt_std","s":0.497,"fam":"physics"},{"f":"chest_acc_tilt_std","s":0.514,"fam":"physics"},{"f":"arm_acc_tilt_std","s":0.521,"fam":"physics"},{"f":"ankle_az_range","s":0.558,"fam":"stat"},{"f":"ankle_ax_range","s":0.61,"fam":"stat"},{"f":"ankle_ay_range","s":0.619,"fam":"stat"},{"f":"ankle_gyro_angmot_std","s":0.622,"fam":"physics"},{"f":"arm_acc_grav_mag_mean","s":0.647,"fam":"physics"},{"f":"ankle_acc_body_mag_std","s":0.649,"fam":"physics"},{"f":"ankle_ay_min","s":0.662,"fam":"stat"},{"f":"ankle_gyro_dgyro_energy","s":0.665,"fam":"physics"},{"f":"ankle_acc_jerk_z_std","s":0.666,"fam":"physics"},{"f":"ankle_gyro_dgyro_mag_std","s":0.668,"fam":"physics"},{"f":"ankle_gyro_dgyro_mag_mean","s":0.669,"fam":"physics"},{"f":"ankle_gyro_dgyro_x_std","s":0.675,"fam":"physics"},{"f":"ankle_gyro_dgyro_z_std","s":0.678,"fam":"physics"},{"f":"arm_gy_range","s":0.693,"fam":"stat"},{"f":"arm_gyro_dgyro_energy","s":0.696,"fam":"physics"},{"f":"ankle_acc_jerk_mag_std","s":0.696,"fam":"physics"},{"f":"arm_az_range","s":0.697,"fam":"stat"},{"f":"arm_gyro_dgyro_y_std","s":0.701,"fam":"physics"},{"f":"arm_ax_range","s":0.702,"fam":"stat"},{"f":"ankle_gyro_dgyro_y_std","s":0.707,"fam":"physics"},{"f":"chest_acc_grav_mag_mean","s":0.708,"fam":"physics"},{"f":"ankle_acc_body_mag_energy","s":0.71,"fam":"physics"},{"f":"ankle_az_max","s":0.712,"fam":"stat"},{"f":"arm_gz_range","s":0.715,"fam":"stat"},{"f":"arm_gyro_dgyro_mag_std","s":0.716,"fam":"physics"},{"f":"arm_gy_std","s":0.718,"fam":"stat"},{"f":"arm_gx_range","s":0.72,"fam":"stat"},{"f":"arm_gyro_dgyro_z_std","s":0.724,"fam":"physics"},{"f":"arm_gyro_dgyro_x_std","s":0.724,"fam":"physics"},{"f":"ankle_acc_jerk_energy","s":0.726,"fam":"physics"},{"f":"arm_gyro_angmot_std","s":0.726,"fam":"physics"},{"f":"ankle_acc_jerk_x_std","s":0.729,"fam":"physics"},{"f":"arm_gyro_dgyro_mag_mean","s":0.729,"fam":"physics"},{"f":"arm_acc_body_mag_std","s":0.732,"fam":"physics"},{"f":"ankle_az_std","s":0.733,"fam":"stat"},{"f":"ankle_gz_range","s":0.736,"fam":"stat"},{"f":"arm_gz_std","s":0.74,"fam":"stat"},{"f":"ankle_gx_range","s":0.742,"fam":"stat"},{"f":"ankle_gz_std","s":0.742,"fam":"stat"},{"f":"arm_gx_std","s":0.745,"fam":"stat"},{"f":"arm_ay_range","s":0.748,"fam":"stat"},{"f":"chest_acc_body_mag_std","s":0.75,"fam":"physics"},{"f":"ankle_ay_max","s":0.751,"fam":"stat"},{"f":"ankle_gy_range","s":0.751,"fam":"stat"},{"f":"ankle_ay_std","s":0.753,"fam":"stat"},{"f":"ankle_gx_std","s":0.753,"fam":"stat"},{"f":"arm_acc_jerk_mag_std","s":0.754,"fam":"physics"},{"f":"ankle_acc_jerk_y_std","s":0.754,"fam":"physics"},{"f":"ankle_ax_std","s":0.757,"fam":"stat"},{"f":"ankle_acc_body_mag_mean","s":0.758,"fam":"physics"},{"f":"ankle_ax_max","s":0.763,"fam":"stat"},{"f":"arm_acc_jerk_x_std","s":0.764,"fam":"physics"},{"f":"chest_ax_range","s":0.765,"fam":"stat"},{"f":"chest_ay_range","s":0.773,"fam":"stat"},{"f":"ankle_az_min","s":0.778,"fam":"stat"},{"f":"ankle_gy_std","s":0.778,"fam":"stat"},{"f":"arm_acc_jerk_energy","s":0.78,"fam":"physics"},{"f":"ankle_acc_grav_mag_mean","s":0.783,"fam":"physics"},{"f":"arm_ax_std","s":0.791,"fam":"stat"},{"f":"arm_acc_jerk_z_std","s":0.792,"fam":"physics"},{"f":"chest_ax_min","s":0.792,"fam":"stat"},{"f":"arm_az_std","s":0.793,"fam":"stat"},{"f":"ankle_acc_jerk_mag_mean","s":0.801,"fam":"physics"},{"f":"ankle_ax_min","s":0.804,"fam":"stat"},{"f":"arm_ax_max","s":0.805,"fam":"stat"},{"f":"chest_az_range","s":0.811,"fam":"stat"},{"f":"arm_acc_body_mag_energy","s":0.817,"fam":"physics"},{"f":"arm_ay_min","s":0.82,"fam":"stat"},{"f":"arm_ay_max","s":0.825,"fam":"stat"},{"f":"arm_ay_std","s":0.825,"fam":"stat"},{"f":"arm_ay_q75","s":0.825,"fam":"stat"},{"f":"chest_acc_jerk_mag_std","s":0.826,"fam":"physics"},{"f":"chest_acc_jerk_y_std","s":0.827,"fam":"physics"},{"f":"arm_acc_jerk_y_std","s":0.833,"fam":"physics"},{"f":"chest_acc_body_mag_energy","s":0.84,"fam":"physics"},{"f":"chest_acc_jerk_x_std","s":0.851,"fam":"physics"},{"f":"arm_gyro_sma","s":0.852,"fam":"physics"},{"f":"arm_acc_body_mag_mean","s":0.852,"fam":"physics"},{"f":"arm_acc_jerk_mag_mean","s":0.853,"fam":"physics"},{"f":"arm_az_max","s":0.854,"fam":"stat"},{"f":"arm_ay_median","s":0.857,"fam":"stat"},{"f":"chest_ay_std","s":0.858,"fam":"stat"},{"f":"arm_ay_mean","s":0.859,"fam":"stat"},{"f":"arm_az_min","s":0.861,"fam":"stat"},{"f":"chest_ax_std","s":0.861,"fam":"stat"},{"f":"arm_ax_min","s":0.862,"fam":"stat"},{"f":"ankle_ay_q25","s":0.864,"fam":"stat"},{"f":"chest_ax_max","s":0.865,"fam":"stat"},{"f":"chest_acc_body_mag_mean","s":0.868,"fam":"physics"},{"f":"chest_ay_min","s":0.868,"fam":"stat"},{"f":"chest_acc_jerk_energy","s":0.869,"fam":"physics"},{"f":"ankle_ay_q75","s":0.879,"fam":"stat"},{"f":"chest_acc_jerk_z_std","s":0.882,"fam":"physics"},{"f":"chest_ay_max","s":0.884,"fam":"stat"},{"f":"ankle_ay_median","s":0.887,"fam":"stat"},{"f":"chest_ax_q25","s":0.892,"fam":"stat"},{"f":"chest_acc_jerk_mag_mean","s":0.895,"fam":"physics"},{"f":"chest_az_std","s":0.896,"fam":"stat"},{"f":"arm_gyro_angmot_energy","s":0.898,"fam":"physics"},{"f":"ankle_gy_median","s":0.898,"fam":"stat"},{"f":"arm_gyro_angmot_mean","s":0.899,"fam":"physics"},{"f":"chest_ax_median","s":0.901,"fam":"stat"},{"f":"arm_gy_min","s":0.901,"fam":"stat"},{"f":"arm_gy_q25","s":0.904,"fam":"stat"},{"f":"arm_ay_q25","s":0.905,"fam":"stat"},{"f":"ankle_gy_q25","s":0.906,"fam":"stat"},{"f":"ankle_gy_min","s":0.906,"fam":"stat"},{"f":"arm_ay_rms","s":0.906,"fam":"stat"},{"f":"ankle_gyro_sma","s":0.908,"fam":"physics"},{"f":"ankle_ay_rms","s":0.909,"fam":"stat"},{"f":"arm_gx_max","s":0.911,"fam":"stat"},{"f":"arm_gy_median","s":0.912,"fam":"stat"},{"f":"ankle_az_rms","s":0.914,"fam":"stat"},{"f":"ankle_gy_rms","s":0.914,"fam":"stat"},{"f":"ankle_ay_mean","s":0.915,"fam":"stat"},{"f":"arm_gy_rms","s":0.917,"fam":"stat"},{"f":"arm_acc_sma","s":0.917,"fam":"physics"},{"f":"ankle_gy_mean","s":0.918,"fam":"stat"},{"f":"arm_gy_mean","s":0.92,"fam":"stat"},{"f":"chest_ax_q75","s":0.921,"fam":"stat"},{"f":"arm_az_rms","s":0.922,"fam":"stat"},{"f":"ankle_gz_min","s":0.923,"fam":"stat"},{"f":"chest_ax_rms","s":0.923,"fam":"stat"},{"f":"arm_ax_q75","s":0.923,"fam":"stat"},{"f":"ankle_gyro_angmot_mean","s":0.923,"fam":"physics"},{"f":"ankle_az_q25","s":0.925,"fam":"stat"},{"f":"arm_gy_max","s":0.925,"fam":"stat"},{"f":"ankle_gx_max","s":0.926,"fam":"stat"},{"f":"ankle_gyro_angmot_energy","s":0.926,"fam":"physics"},{"f":"chest_ax_mean","s":0.926,"fam":"stat"},{"f":"ankle_acc_tilt_mean","s":0.927,"fam":"physics"},{"f":"chest_az_median","s":0.927,"fam":"stat"},{"f":"arm_ax_median","s":0.928,"fam":"stat"},{"f":"arm_gy_q75","s":0.929,"fam":"stat"},{"f":"arm_gz_max","s":0.929,"fam":"stat"},{"f":"ankle_gz_q25","s":0.929,"fam":"stat"},{"f":"chest_az_min","s":0.931,"fam":"stat"},{"f":"ankle_gz_median","s":0.931,"fam":"stat"},{"f":"ankle_acc_sma","s":0.931,"fam":"physics"},{"f":"arm_gx_q75","s":0.933,"fam":"stat"},{"f":"chest_ay_median","s":0.934,"fam":"stat"},{"f":"arm_gx_rms","s":0.935,"fam":"stat"},{"f":"ankle_gz_mean","s":0.935,"fam":"stat"},{"f":"ankle_gy_q75","s":0.936,"fam":"stat"},{"f":"chest_acc_sma","s":0.936,"fam":"physics"},{"f":"chest_ay_q75","s":0.936,"fam":"stat"},{"f":"arm_ax_rms","s":0.937,"fam":"stat"},{"f":"ankle_az_median","s":0.938,"fam":"stat"},{"f":"arm_gx_min","s":0.938,"fam":"stat"},{"f":"ankle_gz_q75","s":0.939,"fam":"stat"},{"f":"arm_az_q75","s":0.939,"fam":"stat"},{"f":"arm_gx_median","s":0.94,"fam":"stat"},{"f":"ankle_gz_rms","s":0.941,"fam":"stat"},{"f":"arm_gz_q75","s":0.942,"fam":"stat"},{"f":"ankle_gx_q75","s":0.943,"fam":"stat"},{"f":"arm_gx_mean","s":0.943,"fam":"stat"},{"f":"arm_az_median","s":0.943,"fam":"stat"},{"f":"ankle_az_q75","s":0.943,"fam":"stat"},{"f":"arm_ax_q25","s":0.944,"fam":"stat"},{"f":"arm_gz_q25","s":0.944,"fam":"stat"},{"f":"chest_ay_q25","s":0.945,"fam":"stat"},{"f":"arm_gz_rms","s":0.947,"fam":"stat"},{"f":"arm_gx_q25","s":0.947,"fam":"stat"},{"f":"arm_gz_median","s":0.947,"fam":"stat"},{"f":"ankle_gy_max","s":0.948,"fam":"stat"},{"f":"arm_az_q25","s":0.949,"fam":"stat"},{"f":"ankle_az_mean","s":0.949,"fam":"stat"},{"f":"chest_az_max","s":0.949,"fam":"stat"},{"f":"arm_acc_tilt_mean","s":0.95,"fam":"physics"},{"f":"arm_gz_mean","s":0.951,"fam":"stat"},{"f":"chest_ay_rms","s":0.951,"fam":"stat"},{"f":"chest_ay_mean","s":0.953,"fam":"stat"},{"f":"arm_ax_mean","s":0.954,"fam":"stat"},{"f":"ankle_gx_median","s":0.955,"fam":"stat"},{"f":"ankle_gx_rms","s":0.955,"fam":"stat"},{"f":"ankle_gz_max","s":0.956,"fam":"stat"},{"f":"arm_az_mean","s":0.958,"fam":"stat"},{"f":"ankle_gx_mean","s":0.959,"fam":"stat"},{"f":"chest_az_mean","s":0.96,"fam":"stat"},{"f":"ankle_ax_rms","s":0.961,"fam":"stat"},{"f":"chest_az_rms","s":0.961,"fam":"stat"},{"f":"ankle_ax_q75","s":0.961,"fam":"stat"},{"f":"chest_acc_tilt_mean","s":0.961,"fam":"physics"},{"f":"arm_gz_min","s":0.963,"fam":"stat"},{"f":"chest_az_q75","s":0.964,"fam":"stat"},{"f":"ankle_gx_q25","s":0.966,"fam":"stat"},{"f":"ankle_gx_min","s":0.972,"fam":"stat"},{"f":"ankle_ax_median","s":0.975,"fam":"stat"},{"f":"chest_az_q25","s":0.981,"fam":"stat"},{"f":"ankle_ax_q25","s":0.981,"fam":"stat"},{"f":"ankle_ax_mean","s":0.989,"fam":"stat"}],"demo":{"standing":{"raw":[[2.649,2.386,2.324,2.212,2.427,2.446,2.315,2.386,2.418,2.305,2.663,2.521,2.549,2.403,2.496,2.253,2.335,2.601,2.436,2.537,2.609,2.467,2.373,2.427,2.417,2.367,2.56,2.465,2.519,2.478,2.406,2.436,2.223,2.221,2.538,2.511,2.353,2.323,2.365,2.325,2.271,2.458,2.27,2.384,2.376,2.263,2.406,2.212,2.405,2.254,2.396,2.57,2.323,2.285,2.007,2.275,2.367,2.385,2.406,2.395,2.55,2.303,2.395,2.372,2.344,2.445,2.372,2.449,2.284,2.192,2.333,2.416,2.405,2.457,2.162,2.366,2.306,2.324,2.356,2.396,2.382,2.383,2.346,2.405,2.285,2.527,2.337,2.293,2.54,2.388,2.498,2.498,2.311,2.457,2.417,2.489,2.397,2.417,2.359,2.537,2.233,2.459,2.378,2.285,2.423,2.262,2.323,2.334,2.317,2.355,2.385,2.457,2.376,2.468,2.507,2.276,2.398,2.388,2.518,2.355,2.305,2.335,2.415,2.428,2.376],[-9.452,-9.599,-9.541,-9.57,-9.609,-9.391,-9.659,-9.53,-9.618,-9.559,-9.638,-9.537,-9.5,-9.213,-9.502,-9.54,-9.57,-9.559,-9.371,-9.521,-9.431,-9.46,-9.333,-9.55,-9.649,-9.589,-9.689,-9.363,-9.509,-9.69,-9.6,-9.541,-9.53,-9.501,-9.431,-9.498,-9.252,-9.521,-9.43,-9.609,-9.442,-9.509,-9.403,-9.432,-9.619,-9.591,-9.59,-9.53,-9.561,-9.739,-9.45,-9.62,-9.522,-9.529,-9.451,-9.589,-9.579,-9.451,-9.6,-9.44,-9.549,-9.502,-9.551,-9.353,-9.401,-9.542,-9.503,-9.518,-9.52,-9.54,-9.512,-9.56,-9.501,-9.54,-9.539,-9.599,-9.688,-9.431,-9.509,-9.53,-9.153,-9.512,-9.579,-9.431,-9.519,-9.351,-9.648,-9.34,-9.648,-9.717,-9.54,-9.49,-9.273,-9.55,-9.519,-9.478,-9.659,-9.55,-9.706,-9.331,-9.559,-9.628,-9.658,-9.579,-9.233,-9.491,-9.521,-9.37,-9.687,-9.57,-9.381,-9.54,-9.649,-9.509,-9.561,-9.688,-9.548,-9.627,-9.591,-9.51,-9.489,-9.55,-9.501,-9.508,-9.609],[0.377,0.481,0.4,0.45,0.45,0.472,0.394,0.506,0.585,0.483,0.576,0.715,0.498,0.49,0.289,0.452,0.441,0.486,0.545,0.341,0.482,0.5,0.38,0.463,0.438,0.544,0.416,0.359,0.539,0.311,0.409,0.391,0.504,0.37,0.47,0.748,0.498,0.339,0.594,0.48,0.332,0.539,0.303,0.417,0.47,0.345,0.367,0.431,0.327,0.327,0.583,0.42,0.308,0.567,0.412,0.554,0.555,0.468,0.398,0.51,0.538,0.35,0.38,0.337,0.543,0.297,0.194,0.674,0.484,0.462,0.339,0.432,0.393,0.485,0.576,0.512,0.466,0.479,0.559,0.475,0.493,0.236,0.513,0.511,0.578,0.516,0.541,0.618,0.512,0.538,0.506,0.54,0.424,0.474,0.59,0.676,0.447,0.474,0.642,0.538,0.482,0.543,0.572,0.554,0.448,0.402,0.339,0.596,0.622,0.462,0.534,0.423,0.427,0.549,0.349,0.528,0.609,0.615,0.337,0.506,0.611,0.463,0.403,0.653,0.481]],"grav":[[2.693,2.679,2.665,2.651,2.637,2.623,2.609,2.596,2.583,2.57,2.557,2.544,2.532,2.521,2.509,2.498,2.487,2.477,2.467,2.458,2.449,2.44,2.432,2.424,2.416,2.409,2.403,2.396,2.391,2.385,2.38,2.375,2.371,2.366,2.363,2.359,2.356,2.353,2.35,2.348,2.346,2.344,2.343,2.341,2.34,2.339,2.338,2.338,2.337,2.337,2.337,2.337,2.337,2.337,2.338,2.338,2.339,2.34,2.34,2.341,2.342,2.343,2.344,2.345,2.346,2.346,2.347,2.349,2.35,2.351,2.352,2.353,2.354,2.355,2.356,2.357,2.358,2.358,2.359,2.36,2.361,2.362,2.363,2.364,2.364,2.365,2.366,2.366,2.367,2.368,2.368,2.369,2.369,2.37,2.37,2.37,2.371,2.371,2.371,2.372,2.372,2.372,2.372,2.373,2.373,2.373,2.373,2.373,2.373,2.373,2.373,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374,2.374],[-9.403,-9.41,-9.417,-9.423,-9.43,-9.437,-9.444,-9.45,-9.456,-9.462,-9.468,-9.474,-9.48,-9.485,-9.491,-9.496,-9.501,-9.505,-9.51,-9.514,-9.518,-9.521,-9.525,-9.528,-9.531,-9.534,-9.537,-9.539,-9.542,-9.544,-9.546,-9.547,-9.549,-9.55,-9.551,-9.552,-9.553,-9.553,-9.554,-9.554,-9.554,-9.554,-9.554,-9.554,-9.553,-9.553,-9.552,-9.551,-9.551,-9.55,-9.549,-9.548,-9.546,-9.545,-9.544,-9.543,-9.541,-9.54,-9.538,-9.537,-9.536,-9.534,-9.533,-9.531,-9.53,-9.528,-9.527,-9.526,-9.524,-9.523,-9.522,-9.521,-9.519,-9.518,-9.517,-9.516,-9.515,-9.515,-9.514,-9.513,-9.512,-9.512,-9.511,-9.511,-9.51,-9.51,-9.51,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.509,-9.51,-9.51,-9.51,-9.51,-9.51,-9.51,-9.511,-9.511,-9.511,-9.511,-9.511,-9.511,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512,-9.512],[0.411,0.414,0.417,0.419,0.422,0.425,0.428,0.43,0.433,0.435,0.437,0.439,0.441,0.443,0.445,0.447,0.448,0.45,0.451,0.452,0.453,0.454,0.454,0.455,0.455,0.456,0.456,0.456,0.456,0.455,0.455,0.455,0.454,0.454,0.453,0.453,0.452,0.451,0.451,0.45,0.449,0.448,0.448,0.447,0.446,0.446,0.445,0.445,0.444,0.444,0.444,0.444,0.443,0.443,0.444,0.444,0.444,0.444,0.445,0.445,0.446,0.447,0.448,0.449,0.45,0.451,0.452,0.453,0.455,0.456,0.458,0.459,0.461,0.463,0.465,0.466,0.468,0.47,0.472,0.474,0.476,0.478,0.48,0.482,0.484,0.486,0.488,0.489,0.491,0.493,0.495,0.496,0.498,0.499,0.501,0.502,0.503,0.504,0.505,0.506,0.507,0.508,0.509,0.51,0.51,0.511,0.512,0.512,0.512,0.513,0.513,0.513,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514,0.514]],"body":[[-0.044,-0.293,-0.341,-0.439,-0.21,-0.177,-0.295,-0.21,-0.164,-0.265,0.106,-0.024,0.017,-0.117,-0.013,-0.245,-0.153,0.123,-0.031,0.08,0.161,0.027,-0.059,0.003,0.001,-0.043,0.157,0.068,0.128,0.093,0.026,0.061,-0.148,-0.145,0.175,0.152,-0.003,-0.03,0.015,-0.023,-0.075,0.113,-0.072,0.043,0.036,-0.077,0.067,-0.126,0.068,-0.083,0.059,0.233,-0.014,-0.053,-0.331,-0.063,0.028,0.045,0.066,0.054,0.208,-0.04,0.052,0.028,-0.001,0.099,0.025,0.1,-0.066,-0.159,-0.018,0.064,0.052,0.103,-0.193,0.01,-0.052,-0.035,-0.004,0.036,0.021,0.021,-0.017,0.042,-0.08,0.162,-0.029,-0.073,0.173,0.021,0.13,0.13,-0.058,0.088,0.047,0.119,0.026,0.045,-0.013,0.166,-0.139,0.087,0.005,-0.088,0.051,-0.111,-0.05,-0.039,-0.056,-0.018,0.011,0.083,0.003,0.094,0.133,-0.098,0.024,0.014,0.144,-0.019,-0.069,-0.039,0.041,0.054,0.002],[-0.049,-0.19,-0.124,-0.146,-0.179,0.046,-0.216,-0.08,-0.162,-0.097,-0.169,-0.063,-0.02,0.272,-0.011,-0.044,-0.069,-0.054,0.139,-0.008,0.087,0.061,0.192,-0.021,-0.118,-0.054,-0.152,0.177,0.032,-0.146,-0.054,0.007,0.019,0.049,0.12,0.055,0.3,0.032,0.124,-0.055,0.112,0.045,0.151,0.122,-0.066,-0.038,-0.038,0.021,-0.01,-0.19,0.099,-0.072,0.025,0.016,0.093,-0.046,-0.037,0.089,-0.062,0.097,-0.014,0.033,-0.018,0.178,0.129,-0.013,0.024,0.008,0.004,-0.017,0.01,-0.039,0.018,-0.021,-0.021,-0.082,-0.173,0.084,0.005,-0.017,0.359,-0.001,-0.068,0.08,-0.009,0.159,-0.138,0.169,-0.139,-0.208,-0.03,0.019,0.236,-0.041,-0.01,0.031,-0.15,-0.04,-0.197,0.178,-0.05,-0.118,-0.148,-0.068,0.277,0.02,-0.011,0.141,-0.176,-0.058,0.131,-0.029,-0.137,0.002,-0.049,-0.176,-0.036,-0.115,-0.078,0.003,0.023,-0.037,0.012,0.004,-0.097],[-0.034,0.068,-0.016,0.03,0.028,0.047,-0.033,0.076,0.152,0.048,0.139,0.276,0.057,0.047,-0.156,0.005,-0.008,0.036,0.094,-0.111,0.029,0.046,-0.074,0.008,-0.018,0.089,-0.04,-0.097,0.084,-0.144,-0.047,-0.064,0.05,-0.084,0.017,0.296,0.046,-0.112,0.143,0.03,-0.117,0.09,-0.145,-0.03,0.024,-0.101,-0.078,-0.014,-0.117,-0.117,0.139,-0.024,-0.136,0.124,-0.031,0.11,0.111,0.024,-0.047,0.065,0.092,-0.097,-0.068,-0.111,0.093,-0.153,-0.258,0.22,0.03,0.005,-0.118,-0.028,-0.068,0.022,0.111,0.046,-0.003,0.009,0.086,0.0,0.017,-0.242,0.033,0.029,0.094,0.03,0.053,0.129,0.021,0.045,0.012,0.044,-0.074,-0.025,0.089,0.174,-0.056,-0.031,0.137,0.032,-0.026,0.035,0.063,0.045,-0.062,-0.109,-0.173,0.084,0.11,-0.051,0.021,-0.091,-0.087,0.035,-0.165,0.014,0.095,0.101,-0.177,-0.008,0.097,-0.052,-0.111,0.139,-0.034]],"jerkmag":[0.0,5.203,4.135,20.904,10.755,12.95,9.399,3.562,14.162,13.415,16.374,12.963,8.489,14.685,16.845,15.413,8.169,12.187,8.86,4.56,15.831,16.523,21.013,13.295,7.051,7.38,3.933,21.045,15.461,13.042,11.776,6.501,15.391,18.282,17.807,17.321,19.008,6.908,15.127,6.186,1.259,9.502,13.614,2.633,9.852,4.582,6.92,11.637,14.359,23.353,11.631,21.456,15.387,12.222,22.754,13.221,5.244,13.696,22.238,14.26,12.52,10.711,8.164,13.942,9.813,8.087,25.201,6.573,7.725,9.566,11.953,6.733,3.577,17.022,16.79,9.749,15.952,10.084,11.116,5.681,15.456,12.209,3.735,5.932,14.416,11.761,8.218,14.511,17.443,11.854,7.288,9.891,10.952,7.749,12.655,18.241,13.17,6.438,11.535,12.825,20.69,15.768,13.066,9.069,23.669,11.323,15.739,12.805,10.527,7.988,5.379,7.378,4.183,14.233,9.366,14.676,6.317,16.656,10.122,6.397,11.013,15.533,1.136,18.28,10.981],"feats":{"sma":12.38,"body_energy":0.03,"jerk_energy":157.6,"tilt":0.048,"grav_mag_std":0.0146}},"walking":{"raw":[[4.379,4.182,3.114,3.972,3.393,3.179,2.351,3.322,2.023,2.441,2.826,10.16,4.606,4.226,-0.539,3.427,1.254,3.394,2.228,3.75,1.739,2.102,1.747,19.993,-10.762,13.158,0.06,1.823,5.64,1.433,4.83,1.278,6.051,2.245,2.945,2.347,1.131,2.022,12.6,7.743,4.238,-0.687,1.996,-1.451,2.478,0.286,1.379,1.164,0.195,3.511,1.782,0.188,7.153,-5.504,8.534,2.349,4.38,4.036,2.63,3.214,3.942,2.536,1.705,4.276,1.196,4.774,9.178,2.457,1.167,0.525,0.061,1.811,0.278,2.01,4.818,5.042,-5.839,9.149,1.421,-4.402,10.101,2.008,1.093,4.926,1.375,3.755,2.472,2.832,1.544,4.658,2.125,3.352,1.031,11.547,8.17,1.647,-4.118,3.023,0.841,0.358,0.488,4.1,2.715,2.245,4.763,1.983,-7.16,15.074,1.299,3.557,4.318,3.077,3.391,3.25,3.868,1.985,4.015,3.884,1.046,3.679,9.875,4.123,3.085,-2.094,0.738],[-10.206,-9.58,-9.687,-9.305,-8.483,-9.433,-10.984,-10.912,-12.555,-14.655,-17.275,-18.88,-14.632,-9.626,-4.777,-5.261,-7.54,-9.323,-13.275,-19.022,-19.365,-12.673,-7.451,-18.916,-15.373,-13.354,-7.89,-12.031,-9.432,-9.354,-9.535,-8.065,-9.188,-10.298,-10.952,-12.818,-14.349,-18.493,-15.89,-17.387,-11.693,-5.172,-4.452,-8.04,-10.02,-14.088,-19.297,-19.4,-12.852,-7.393,-8.974,-11.783,-12.019,-12.252,-9.875,-9.705,-8.986,-8.563,-9.25,-10.529,-9.665,-11.663,-11.847,-13.477,-17.383,-14.978,-19.13,-11.84,-6.794,-3.994,-6.149,-8.464,-10.636,-15.748,-19.317,-19.399,-3.967,-10.247,-18.997,-19.281,-11.21,-8.94,-11.216,-8.91,-9.84,-9.619,-9.545,-9.913,-11.225,-10.393,-12.375,-13.812,-17.704,-17.772,-15.859,-11.975,-6.062,-4.017,-7.694,-9.818,-13.19,-19.23,-19.349,-14.912,-8.046,-19.056,-19.365,-13.397,-8.876,-11.591,-9.367,-9.703,-9.435,-8.653,-10.117,-10.643,-10.813,-11.941,-14.021,-17.339,-18.15,-19.185,-10.965,-4.321,-3.185],[0.148,-0.531,-0.359,0.168,0.193,-0.69,-0.39,-0.117,-0.024,0.833,7.175,-2.863,5.106,2.738,1.547,0.657,-0.5,-2.568,-2.735,-5.205,-10.753,-18.831,-16.428,23.244,-0.71,-6.734,-0.831,-0.156,-0.582,0.224,-0.053,1.412,0.976,-0.055,-0.101,-0.607,0.763,7.137,-4.856,2.875,1.947,2.641,1.287,-0.094,-3.039,-2.837,-5.93,-13.219,-18.849,-18.522,-8.337,-0.077,-3.842,0.562,-0.325,0.757,0.438,0.175,0.71,-0.39,-0.173,0.057,-0.534,-1.183,2.257,1.174,6.812,-1.838,3.787,0.597,-0.088,-0.863,-2.185,-2.549,-7.918,-14.159,-18.517,-16.817,23.054,-3.362,-6.168,0.021,0.158,0.052,0.147,-0.485,-0.067,-0.165,-0.733,0.277,0.09,0.957,5.844,-3.888,4.153,-4.457,6.635,0.309,-0.147,-1.571,-3.207,-4.16,-11.128,-18.942,-17.459,23.077,-6.832,-6.977,-1.42,0.269,-0.061,0.014,0.104,1.037,0.147,-0.908,-0.157,-0.037,0.83,6.701,-3.08,3.28,-1.476,3.586,1.254]],"grav":[[4.654,4.566,4.478,4.391,4.304,4.217,4.132,4.047,3.963,3.881,3.801,3.722,3.644,3.569,3.496,3.425,3.356,3.29,3.226,3.164,3.105,3.048,2.994,2.943,2.894,2.848,2.804,2.763,2.724,2.687,2.653,2.621,2.591,2.564,2.538,2.514,2.492,2.473,2.454,2.438,2.423,2.41,2.399,2.389,2.38,2.373,2.367,2.363,2.359,2.357,2.356,2.356,2.357,2.359,2.361,2.364,2.368,2.372,2.377,2.382,2.387,2.393,2.399,2.405,2.411,2.417,2.423,2.429,2.435,2.442,2.448,2.454,2.46,2.467,2.473,2.479,2.485,2.491,2.497,2.503,2.509,2.515,2.521,2.526,2.531,2.537,2.542,2.546,2.551,2.555,2.559,2.563,2.567,2.57,2.573,2.576,2.579,2.581,2.583,2.586,2.588,2.59,2.591,2.593,2.595,2.596,2.598,2.599,2.601,2.602,2.603,2.604,2.605,2.606,2.607,2.607,2.608,2.608,2.608,2.609,2.609,2.609,2.609,2.609,2.609],[-10.599,-10.655,-10.71,-10.766,-10.821,-10.875,-10.928,-10.981,-11.033,-11.083,-11.133,-11.181,-11.227,-11.272,-11.316,-11.358,-11.398,-11.436,-11.473,-11.508,-11.541,-11.572,-11.601,-11.629,-11.654,-11.678,-11.7,-11.721,-11.739,-11.756,-11.771,-11.785,-11.797,-11.808,-11.816,-11.824,-11.83,-11.834,-11.838,-11.839,-11.84,-11.839,-11.837,-11.834,-11.83,-11.824,-11.818,-11.811,-11.803,-11.794,-11.785,-11.775,-11.765,-11.754,-11.743,-11.731,-11.719,-11.707,-11.695,-11.683,-11.671,-11.659,-11.647,-11.635,-11.624,-11.612,-11.6,-11.589,-11.578,-11.567,-11.557,-11.546,-11.536,-11.527,-11.517,-11.508,-11.499,-11.491,-11.483,-11.475,-11.468,-11.461,-11.454,-11.448,-11.441,-11.435,-11.43,-11.424,-11.419,-11.414,-11.409,-11.405,-11.4,-11.395,-11.391,-11.386,-11.382,-11.377,-11.373,-11.368,-11.364,-11.359,-11.355,-11.351,-11.347,-11.342,-11.338,-11.334,-11.331,-11.327,-11.324,-11.321,-11.318,-11.315,-11.312,-11.31,-11.308,-11.306,-11.304,-11.303,-11.302,-11.3,-11.299,-11.299,-11.298],[-0.072,-0.126,-0.181,-0.237,-0.294,-0.351,-0.408,-0.466,-0.523,-0.581,-0.637,-0.694,-0.749,-0.804,-0.857,-0.909,-0.959,-1.008,-1.055,-1.099,-1.142,-1.182,-1.221,-1.256,-1.29,-1.322,-1.351,-1.378,-1.404,-1.428,-1.45,-1.471,-1.49,-1.508,-1.525,-1.541,-1.556,-1.571,-1.584,-1.598,-1.61,-1.622,-1.634,-1.645,-1.656,-1.666,-1.675,-1.685,-1.694,-1.702,-1.71,-1.718,-1.726,-1.734,-1.741,-1.749,-1.757,-1.765,-1.773,-1.781,-1.79,-1.799,-1.808,-1.818,-1.827,-1.838,-1.848,-1.858,-1.868,-1.878,-1.888,-1.898,-1.907,-1.916,-1.923,-1.931,-1.937,-1.943,-1.948,-1.952,-1.955,-1.957,-1.959,-1.96,-1.961,-1.961,-1.96,-1.96,-1.959,-1.958,-1.956,-1.955,-1.953,-1.951,-1.949,-1.947,-1.945,-1.942,-1.94,-1.936,-1.933,-1.929,-1.924,-1.919,-1.914,-1.908,-1.902,-1.896,-1.889,-1.882,-1.875,-1.868,-1.861,-1.855,-1.849,-1.843,-1.838,-1.833,-1.829,-1.825,-1.822,-1.819,-1.817,-1.816,-1.815]],"body":[[-0.275,-0.384,-1.365,-0.419,-0.911,-1.038,-1.781,-0.725,-1.94,-1.441,-0.974,6.438,0.961,0.657,-4.035,0.002,-2.102,0.105,-0.998,0.586,-1.366,-0.947,-1.247,17.05,-13.656,10.31,-2.744,-0.94,2.916,-1.255,2.176,-1.343,3.459,-0.318,0.407,-0.168,-1.362,-0.451,10.146,5.305,1.815,-3.097,-0.403,-3.84,0.098,-2.087,-0.989,-1.199,-2.164,1.154,-0.574,-2.168,4.796,-7.863,6.173,-0.015,2.012,1.664,0.253,0.832,1.555,0.143,-0.694,1.871,-1.214,2.357,6.755,0.028,-1.268,-1.916,-2.387,-0.644,-2.182,-0.457,2.345,2.563,-8.325,6.657,-1.077,-6.905,7.592,-0.507,-1.427,2.4,-1.156,1.218,-0.069,0.286,-1.007,2.102,-0.435,0.789,-1.535,8.977,5.596,-0.929,-6.697,0.442,-1.743,-2.228,-2.1,1.51,0.123,-0.348,2.168,-0.614,-9.758,12.475,-1.302,0.955,1.715,0.473,0.786,0.644,1.261,-0.622,1.407,1.276,-1.562,1.071,7.266,1.514,0.476,-4.703,-1.87],[0.393,1.075,1.024,1.46,2.337,1.442,-0.056,0.069,-1.522,-3.572,-6.142,-7.699,-3.405,1.646,6.539,6.097,3.858,2.113,-1.802,-7.514,-7.824,-1.101,4.15,-7.287,-3.719,-1.676,3.811,-0.31,2.308,2.402,2.236,3.72,2.609,1.51,0.864,-0.994,-2.519,-6.659,-4.052,-5.548,0.147,6.667,7.384,3.793,1.81,-2.264,-7.479,-7.589,-1.049,4.401,2.811,-0.008,-0.254,-0.498,1.868,2.026,2.734,3.145,2.445,1.154,2.006,-0.004,-0.2,-1.842,-5.759,-3.366,-7.53,-0.251,4.784,7.573,5.407,3.082,0.9,-4.221,-7.8,-7.891,7.532,1.244,-7.514,-7.806,0.258,2.52,0.238,2.537,1.601,1.817,1.885,1.512,0.194,1.021,-0.966,-2.407,-6.304,-6.377,-4.468,-0.589,5.319,7.36,3.678,1.551,-1.826,-7.871,-7.994,-3.561,3.301,-7.714,-8.027,-2.063,2.455,-0.264,1.957,1.618,1.883,2.662,1.195,0.667,0.495,-0.635,-2.717,-6.036,-6.848,-7.885,0.334,6.978,8.113],[0.22,-0.405,-0.178,0.406,0.487,-0.339,0.018,0.349,0.499,1.414,7.812,-2.169,5.855,3.542,2.404,1.566,0.459,-1.56,-1.681,-4.106,-9.611,-17.649,-15.207,24.5,0.581,-5.412,0.52,1.222,0.822,1.651,1.396,2.882,2.466,1.453,1.424,0.934,2.319,8.708,-3.272,4.472,3.557,4.263,2.921,1.551,-1.383,-1.171,-4.255,-11.534,-17.155,-16.82,-6.627,1.642,-2.116,2.295,1.416,2.506,2.195,1.939,2.482,1.391,1.617,1.856,1.274,0.634,4.085,3.011,8.66,0.02,5.655,2.476,1.8,1.034,-0.278,-0.633,-5.994,-12.228,-16.58,-14.874,25.002,-1.411,-4.213,1.978,2.117,2.012,2.107,1.476,1.893,1.795,1.225,2.235,2.046,2.912,7.797,-1.936,6.103,-2.51,8.58,2.251,1.792,0.366,-1.274,-2.231,-9.204,-17.023,-15.545,24.985,-4.929,-5.082,0.468,2.15,1.814,1.882,1.965,2.892,1.996,0.935,1.681,1.795,2.659,8.526,-1.258,5.099,0.342,5.402,3.069]],"jerkmag":[0.0,63.916,89.901,37.02,14.545,114.772,84.574,46.396,54.71,66.818,184.506,327.856,318.416,244.456,219.991,125.879,68.129,78.512,116.516,203.05,141.818,375.804,460.102,2229.603,545.606,654.204,248.656,211.734,48.835,47.78,33.762,157.944,123.483,45.271,58.781,79.378,74.333,284.71,779.068,256.887,198.836,246.247,86.07,134.596,108.688,111.463,184.991,207.296,363.988,356.267,1705.569,793.344,404.088,69.832,338.439,150.906,256.762,145.087,48.124,28.191,93.778,94.425,36.554,83.403,198.653,342.868,408.365,307.009,245.897,134.894,155.909,152.503,100.858,162.376,187.139,198.056,619.428,356.025,1884.553,1328.996,545.137,191.31,220.81,76.219,49.782,33.493,29.774,32.903,49.486,118.979,45.518,60.503,215.361,580.148,244.158,281.81,238.243,200.719,188.418,70.797,137.995,213.738,226.684,247.782,613.847,2163.693,1351.075,826.083,71.093,306.452,93.804,122.71,68.014,48.436,65.018,73.592,58.649,51.914,121.611,241.416,485.634,262.171,257.791,153.929,112.643],"feats":{"sma":18.92,"body_energy":77.7,"jerk_energy":234033.5,"tilt":-0.133,"grav_mag_std":0.1653}},"running":{"raw":[[-3.951,19.521,0.75,12.865,11.991,15.702,6.676,-2.125,3.109,0.783,-4.92,-10.967,-12.368,-8.58,19.609,-18.973,-4.141,4.511,4.385,13.388,2.719,8.107,18.636,11.81,11.26,0.574,0.011,4.136,-4.203,-6.823,-16.62,-21.83,20.003,-6.767,3.815,4.492,6.333,-2.12,15.806,-2.793,10.418,12.404,14.82,4.109,-0.039,2.372,0.861,-3.272,-12.773,-16.232,-7.36,-21.753,8.42,2.515,3.032,11.911,17.766,-15.805,16.159,13.654,17.065,8.153,-2.902,4.272,3.915,-5.912,-20.968,-19.781,-10.82,-21.645,1.199,6.981,2.861,19.776,15.925,-2.516,10.085,10.933,12.652,10.798,-1.41,-1.931,1.643,-3.148,-5.24,-21.743,-21.787,19.745,8.814,6.301,3.525,3.447,-1.407,17.058,-3.282,13.528,13.884,13.768,6.79,-4.314,2.666,2.975,-8.548,-18.151,-19.082,-11.371,-21.656,11.341,6.37,1.319,1.462,18.989,-3.642,9.997,12.574,16.568,8.0,-1.985,2.464,-0.12,-3.284,-9.548,-17.528,-21.816,19.583],[-19.154,-6.962,-19.147,-19.157,-19.144,-19.189,-6.448,4.755,-6.713,-9.582,-16.982,-19.499,-13.874,-8.683,-8.595,20.547,-15.748,-19.287,-19.249,-11.418,-1.625,-19.129,-19.091,-19.161,-13.543,1.941,-2.41,-9.056,-12.008,-18.308,-19.54,-8.367,-18.876,-2.567,-14.992,-19.216,-19.209,-19.172,-6.681,-19.108,-19.134,-19.169,-19.203,-4.004,1.16,-7.975,-9.776,-13.448,-19.539,-8.862,0.373,-19.57,2.371,-11.274,-19.225,-18.957,-8.842,-15.785,-19.149,-19.113,-19.183,-8.3,5.043,-15.632,-9.043,-13.004,-19.54,-13.448,-6.998,8.963,-10.306,-16.398,-19.284,-19.166,-12.936,-7.006,-19.151,-19.1,-19.208,-12.146,3.076,-2.963,-10.049,-10.794,-13.457,-19.56,-11.705,-0.443,20.689,-10.927,-17.797,-19.258,-19.12,-14.034,-19.149,-19.117,-19.138,-19.184,-7.125,2.96,-6.197,-11.654,-16.058,-19.5,-11.853,-1.747,-5.197,-7.247,-19.399,-19.213,-19.017,-9.983,-17.164,-19.137,-19.132,-19.169,-12.519,7.951,-3.117,-7.067,-11.078,-19.499,-19.56,-9.793,12.182],[12.294,-12.007,11.998,4.108,4.423,-2.073,-6.193,-5.69,-4.003,-3.721,-12.096,-19.251,-19.036,-18.77,23.693,-17.558,-8.422,-4.961,-0.179,-2.229,-0.096,7.885,5.753,2.67,0.196,-3.876,-5.36,-4.609,-4.726,-18.952,-19.31,-18.897,23.246,-17.071,-13.045,-4.749,1.832,7.562,-7.697,15.912,7.366,4.864,-1.447,-6.347,-4.797,-3.417,-5.272,-13.08,-19.271,-18.845,-16.211,-19.363,1.484,-2.643,0.319,23.15,-16.921,1.709,3.912,7.462,-0.466,-3.229,-4.589,-5.739,-6.298,-11.303,-19.353,-19.099,-18.594,24.055,-12.826,-11.136,-4.602,0.239,-14.363,-5.594,6.664,6.863,-2.001,-0.76,-4.246,-4.188,-2.903,-3.186,-17.007,-19.362,-19.022,24.04,-17.273,-11.483,-17.313,-0.106,14.707,-13.312,13.833,5.159,6.005,0.439,-3.611,-3.999,-3.877,-5.011,-12.732,-19.323,-18.992,-11.305,-18.726,-9.853,-17.146,1.511,23.053,-12.153,5.376,7.06,6.617,0.926,-2.358,-6.883,-5.746,-3.74,-5.806,-19.237,-19.32,-18.958,10.232]],"grav":[[-6.496,-6.097,-5.7,-5.306,-4.916,-4.531,-4.152,-3.78,-3.416,-3.061,-2.714,-2.378,-2.053,-1.738,-1.435,-1.144,-0.866,-0.6,-0.347,-0.108,0.119,0.332,0.531,0.718,0.891,1.052,1.2,1.336,1.46,1.572,1.673,1.763,1.843,1.913,1.973,2.024,2.067,2.101,2.127,2.145,2.157,2.162,2.161,2.154,2.143,2.126,2.106,2.082,2.054,2.024,1.992,1.957,1.921,1.883,1.844,1.804,1.764,1.723,1.681,1.64,1.599,1.559,1.519,1.481,1.443,1.407,1.372,1.339,1.307,1.278,1.25,1.223,1.199,1.176,1.155,1.135,1.116,1.1,1.084,1.07,1.057,1.046,1.035,1.026,1.018,1.011,1.005,1.0,0.996,0.992,0.988,0.985,0.982,0.979,0.976,0.973,0.969,0.965,0.961,0.956,0.951,0.946,0.94,0.935,0.929,0.923,0.917,0.91,0.904,0.897,0.891,0.884,0.877,0.87,0.863,0.856,0.849,0.843,0.837,0.831,0.826,0.821,0.818,0.815,0.812],[-20.754,-20.281,-19.814,-19.353,-18.899,-18.455,-18.02,-17.596,-17.183,-16.784,-16.397,-16.024,-15.665,-15.321,-14.993,-14.679,-14.382,-14.1,-13.833,-13.583,-13.348,-13.128,-12.924,-12.734,-12.559,-12.398,-12.251,-12.118,-11.997,-11.889,-11.792,-11.707,-11.633,-11.569,-11.514,-11.469,-11.433,-11.404,-11.383,-11.369,-11.362,-11.361,-11.365,-11.375,-11.389,-11.408,-11.431,-11.458,-11.488,-11.521,-11.556,-11.593,-11.633,-11.673,-11.715,-11.757,-11.8,-11.842,-11.885,-11.926,-11.967,-12.007,-12.046,-12.083,-12.118,-12.151,-12.182,-12.212,-12.238,-12.262,-12.284,-12.303,-12.32,-12.334,-12.345,-12.354,-12.361,-12.365,-12.367,-12.366,-12.364,-12.36,-12.354,-12.347,-12.339,-12.329,-12.318,-12.306,-12.294,-12.281,-12.267,-12.253,-12.239,-12.224,-12.21,-12.195,-12.181,-12.167,-12.154,-12.141,-12.128,-12.116,-12.105,-12.095,-12.086,-12.077,-12.07,-12.063,-12.057,-12.052,-12.048,-12.044,-12.041,-12.039,-12.037,-12.036,-12.035,-12.034,-12.034,-12.033,-12.033,-12.034,-12.034,-12.034,-12.035],[12.242,11.366,10.496,9.633,8.78,7.94,7.114,6.304,5.514,4.744,3.996,3.272,2.572,1.899,1.253,0.635,0.046,-0.515,-1.046,-1.548,-2.02,-2.462,-2.875,-3.259,-3.615,-3.942,-4.242,-4.515,-4.762,-4.984,-5.181,-5.354,-5.506,-5.635,-5.745,-5.836,-5.908,-5.964,-6.005,-6.031,-6.044,-6.045,-6.036,-6.017,-5.988,-5.953,-5.911,-5.863,-5.81,-5.753,-5.694,-5.632,-5.569,-5.505,-5.441,-5.378,-5.316,-5.256,-5.198,-5.143,-5.091,-5.042,-4.996,-4.954,-4.916,-4.881,-4.85,-4.824,-4.801,-4.782,-4.767,-4.755,-4.748,-4.744,-4.744,-4.747,-4.754,-4.764,-4.776,-4.792,-4.81,-4.831,-4.853,-4.878,-4.904,-4.932,-4.96,-4.99,-5.021,-5.052,-5.083,-5.115,-5.147,-5.18,-5.212,-5.244,-5.276,-5.307,-5.338,-5.368,-5.397,-5.425,-5.452,-5.478,-5.503,-5.526,-5.548,-5.568,-5.587,-5.605,-5.621,-5.637,-5.651,-5.663,-5.675,-5.685,-5.695,-5.703,-5.711,-5.717,-5.723,-5.727,-5.731,-5.734,-5.736]],"body":[[2.546,25.618,6.45,18.171,16.907,20.233,10.828,1.655,6.525,3.844,-2.206,-8.589,-10.315,-6.842,21.044,-17.829,-3.275,5.111,4.732,13.496,2.601,7.775,18.105,11.092,10.369,-0.478,-1.189,2.8,-5.662,-8.395,-18.293,-23.593,18.16,-8.68,1.842,2.467,4.266,-4.221,13.679,-4.938,8.261,10.242,12.659,1.955,-2.182,0.246,-1.244,-5.354,-14.827,-18.256,-9.351,-23.71,6.499,0.632,1.188,10.107,16.002,-17.528,14.478,12.014,15.466,6.594,-4.422,2.792,2.472,-7.319,-22.34,-21.12,-12.127,-22.923,-0.05,5.758,1.662,18.6,14.77,-3.651,8.969,9.833,11.568,9.728,-2.467,-2.976,0.608,-4.175,-6.258,-22.754,-22.792,18.745,7.819,5.309,2.537,2.461,-2.389,16.079,-4.258,12.555,12.915,12.803,5.83,-5.271,1.715,2.029,-9.489,-19.086,-20.011,-12.294,-22.573,10.431,5.466,0.422,0.571,18.105,-4.519,9.127,11.711,15.712,7.15,-2.828,1.627,-0.951,-4.11,-10.37,-18.346,-22.631,18.771],[1.6,13.319,0.667,0.196,-0.245,-0.734,11.572,22.351,10.47,7.202,-0.585,-3.475,1.791,6.639,6.398,35.226,-1.366,-5.187,-5.416,2.165,11.723,-6.001,-6.167,-6.427,-0.984,14.34,9.841,3.062,-0.011,-6.419,-7.748,3.34,-7.243,9.002,-3.478,-7.747,-7.776,-7.768,4.702,-7.739,-7.772,-7.808,-7.838,7.371,12.549,3.434,1.656,-1.99,-8.051,2.659,11.929,-7.977,14.004,0.399,-7.51,-7.2,2.957,-3.943,-7.264,-7.187,-7.216,3.707,17.089,-3.549,3.075,-0.853,-7.358,-1.236,5.24,21.226,1.978,-4.095,-6.964,-6.832,-0.591,5.348,-6.79,-6.735,-6.841,0.22,15.44,9.397,2.305,1.553,-1.118,-7.231,0.613,11.863,32.983,1.354,-5.53,-7.005,-6.881,-1.81,-6.939,-6.922,-6.957,-7.017,5.028,15.101,5.931,0.462,-3.953,-7.405,0.233,10.331,6.873,4.816,-7.342,-7.161,-6.969,2.061,-5.123,-7.098,-7.095,-7.133,-0.484,19.985,8.917,4.966,0.955,-7.465,-7.526,2.241,24.217],[0.052,-23.373,1.502,-5.525,-4.357,-10.013,-13.307,-11.994,-9.516,-8.465,-16.092,-22.523,-21.608,-20.669,22.44,-18.193,-8.468,-4.446,0.867,-0.681,1.924,10.347,8.628,5.93,3.811,0.066,-1.118,-0.094,0.036,-13.968,-14.129,-13.543,28.752,-11.436,-7.3,1.086,7.74,13.526,-1.692,21.943,13.41,10.909,4.589,-0.33,1.192,2.536,0.639,-7.217,-13.461,-13.092,-10.517,-13.731,7.053,2.862,5.76,28.528,-11.605,6.965,9.111,12.605,4.625,1.812,0.406,-0.785,-1.383,-6.422,-14.503,-14.275,-13.793,28.837,-8.059,-6.381,0.146,4.984,-9.619,-0.847,11.418,11.626,2.776,4.032,0.565,0.642,1.951,1.692,-12.103,-14.43,-14.062,29.03,-12.252,-6.431,-12.23,5.01,19.854,-8.132,19.045,10.403,11.281,5.746,1.726,1.368,1.52,0.414,-7.28,-13.845,-13.489,-5.779,-13.178,-4.285,-11.559,7.116,28.674,-6.516,11.027,12.723,12.292,6.611,3.337,-1.179,-0.035,1.977,-0.083,-13.51,-13.589,-13.224,15.968]],"jerkmag":[0.0,580.629,877.263,159.586,99.193,213.029,424.643,197.578,345.557,19.423,335.889,355.271,318.009,437.593,2247.368,2004.601,946.232,249.424,144.337,1464.388,683.644,389.548,234.903,118.012,323.913,503.813,280.8,199.338,323.981,574.093,126.294,373.619,2846.494,1447.74,323.653,425.908,405.636,1287.732,527.537,862.866,168.624,136.851,151.15,527.999,217.864,314.632,84.878,408.358,410.077,537.57,910.74,3223.03,1590.261,335.784,211.055,1305.471,1681.531,1750.296,445.384,281.605,377.048,522.111,166.152,643.779,123.565,330.184,611.004,321.348,599.021,2554.157,1088.244,307.622,169.217,543.807,1202.921,825.603,285.192,118.388,275.113,364.233,560.918,407.575,191.967,300.218,535.916,186.588,264.669,2910.042,2527.487,335.702,504.511,456.5,1602.367,471.734,1155.423,295.312,80.292,155.401,500.706,203.22,259.516,155.452,343.533,678.444,408.755,675.389,2338.205,1609.972,268.914,495.934,1359.387,721.631,1150.745,136.912,27.596,187.91,416.528,799.871,385.506,216.216,158.76,424.789,3.6,459.645,2208.082],"feats":{"sma":32.01,"body_energy":333.2,"jerk_energy":849033.6,"tilt":-0.306,"grav_mag_std":2.2351}},"cycling":{"raw":[[-0.522,-1.692,0.199,-0.904,1.545,-3.134,1.256,1.179,-0.282,-0.226,-0.838,2.355,-3.195,1.13,0.292,0.406,1.789,2.572,0.291,0.078,-0.581,1.284,1.081,4.111,-1.935,0.581,2.47,-0.07,-0.019,1.919,-0.057,0.849,0.287,-1.415,2.079,-2.776,4.056,-1.918,0.274,1.244,-1.951,0.849,-2.866,0.175,1.593,-0.002,0.062,-1.334,-1.299,-0.068,-0.053,-0.721,-0.205,-0.439,-1.536,-1.697,-0.599,0.263,0.046,1.791,-0.221,1.569,0.54,0.488,-2.224,-1.449,2.812,-1.686,-0.072,1.121,0.814,-1.177,1.155,2.073,-0.339,0.975,2.665,1.694,3.313,1.288,0.606,2.52,-3.812,3.884,-2.351,0.543,1.313,-0.31,-0.47,0.424,-2.438,0.099,-0.139,-1.639,0.837,-1.031,0.724,0.026,-1.82,-0.303,-0.306,-0.874,-0.234,-2.129,-1.574,-1.044,-2.551,1.43,0.108,-0.791,0.894,-1.435,0.451,1.744,0.474,0.326,1.388,-0.399,3.572,-0.212,1.804,2.454,0.359,0.664,3.882],[-7.633,-6.858,-9.911,-10.123,-8.785,-8.66,-8.617,-10.473,-9.986,-10.559,-12.469,-10.651,-9.949,-10.63,-10.653,-11.66,-6.966,-10.397,-11.602,-11.321,-12.197,-10.29,-10.169,-9.669,-12.693,-13.498,-6.609,-11.778,-8.838,-9.659,-10.335,-7.987,-11.359,-9.774,-9.053,-9.42,-8.356,-8.19,-9.811,-7.021,-9.151,-6.579,-8.219,-4.98,-6.889,-6.222,-6.38,-5.098,-6.974,-6.857,-5.861,-7.746,-7.75,-6.811,-6.745,-6.643,-8.186,-8.611,-8.083,-6.505,-6.586,-8.281,-9.928,-9.27,-7.448,-8.43,-10.353,-12.52,-10.719,-11.509,-11.83,-9.242,-10.726,-10.536,-11.99,-8.604,-8.197,-13.247,-11.07,-10.976,-9.104,-7.61,-11.284,-9.753,-14.9,-10.636,-8.384,-8.783,-9.93,-10.444,-9.337,-11.323,-7.585,-8.946,-9.26,-8.011,-7.411,-7.215,-5.975,-7.368,-5.391,-7.396,-6.871,-6.727,-7.613,-6.984,-8.69,-8.278,-8.054,-7.405,-6.444,-7.335,-9.037,-5.569,-7.284,-10.59,-9.227,-10.851,-7.67,-11.536,-9.311,-7.524,-13.206,-10.608,-11.354],[-6.814,-4.589,8.923,1.547,-1.257,-2.673,-0.345,-0.762,-2.513,-0.489,-0.33,-0.696,-0.873,-0.645,-2.894,-0.641,-1.56,0.933,2.183,0.528,2.103,-2.314,-3.071,0.433,0.961,-1.273,-3.514,-5.475,-2.567,-5.537,-3.84,-2.641,-6.148,-0.211,-7.265,-4.384,-7.888,-5.106,-5.873,-6.099,-2.237,-7.435,-6.033,-8.914,-2.714,-5.415,-6.277,-6.852,-6.31,-6.5,-3.971,-4.311,-1.744,-5.845,-4.207,-4.88,-3.801,-1.74,-0.383,-4.984,-2.165,-2.378,2.217,-2.292,-2.27,-4.363,-1.646,-0.518,-1.63,-1.418,-0.823,-0.401,-1.358,0.838,0.043,-3.983,-0.852,1.042,0.875,-0.557,-1.533,-2.585,-3.686,-3.022,0.054,-3.235,-5.677,-3.046,-3.876,-4.82,-2.064,-6.513,-4.089,-5.505,-9.194,-6.025,-6.478,-6.673,-7.39,-8.059,-6.387,-2.983,-9.835,-5.389,-4.855,-7.297,-4.616,-5.035,-4.391,-3.826,-4.772,0.161,-1.718,1.479,-1.682,-4.547,2.021,-6.901,-5.577,-1.131,-1.406,-1.883,0.197,-1.388,0.263]],"grav":[[-0.766,-0.7,-0.636,-0.573,-0.51,-0.45,-0.391,-0.333,-0.278,-0.225,-0.173,-0.125,-0.078,-0.034,0.007,0.046,0.082,0.115,0.146,0.173,0.198,0.221,0.24,0.257,0.272,0.284,0.294,0.301,0.307,0.31,0.312,0.312,0.311,0.308,0.304,0.298,0.292,0.286,0.278,0.27,0.262,0.254,0.246,0.238,0.23,0.222,0.214,0.208,0.201,0.195,0.19,0.185,0.181,0.178,0.175,0.173,0.171,0.17,0.169,0.169,0.169,0.169,0.17,0.17,0.171,0.172,0.172,0.173,0.173,0.173,0.172,0.171,0.169,0.167,0.165,0.162,0.158,0.153,0.148,0.143,0.137,0.13,0.122,0.115,0.106,0.098,0.089,0.08,0.071,0.061,0.052,0.042,0.033,0.024,0.015,0.007,-0.001,-0.009,-0.017,-0.024,-0.03,-0.036,-0.041,-0.046,-0.051,-0.055,-0.058,-0.061,-0.064,-0.066,-0.067,-0.069,-0.07,-0.07,-0.071,-0.071,-0.072,-0.072,-0.072,-0.072,-0.072,-0.071,-0.071,-0.071,-0.071],[-8.328,-8.406,-8.482,-8.557,-8.63,-8.701,-8.769,-8.835,-8.897,-8.956,-9.012,-9.063,-9.111,-9.155,-9.194,-9.229,-9.26,-9.286,-9.307,-9.325,-9.337,-9.346,-9.35,-9.35,-9.347,-9.339,-9.328,-9.314,-9.297,-9.278,-9.256,-9.232,-9.206,-9.18,-9.152,-9.123,-9.094,-9.066,-9.037,-9.01,-8.983,-8.958,-8.934,-8.913,-8.893,-8.876,-8.861,-8.849,-8.839,-8.832,-8.828,-8.827,-8.829,-8.833,-8.84,-8.849,-8.861,-8.875,-8.891,-8.909,-8.928,-8.948,-8.969,-8.991,-9.014,-9.036,-9.058,-9.08,-9.101,-9.121,-9.14,-9.157,-9.173,-9.186,-9.198,-9.207,-9.214,-9.218,-9.221,-9.22,-9.217,-9.211,-9.203,-9.193,-9.18,-9.166,-9.149,-9.13,-9.109,-9.088,-9.064,-9.04,-9.015,-8.989,-8.963,-8.937,-8.911,-8.885,-8.859,-8.834,-8.81,-8.787,-8.765,-8.744,-8.725,-8.706,-8.69,-8.674,-8.66,-8.647,-8.636,-8.626,-8.617,-8.61,-8.603,-8.598,-8.593,-8.59,-8.587,-8.585,-8.583,-8.581,-8.58,-8.58,-8.579],[-7.057,-6.789,-6.526,-6.268,-6.017,-5.772,-5.535,-5.306,-5.086,-4.876,-4.676,-4.486,-4.308,-4.141,-3.985,-3.841,-3.708,-3.587,-3.478,-3.38,-3.293,-3.217,-3.151,-3.095,-3.049,-3.012,-2.983,-2.962,-2.949,-2.942,-2.94,-2.944,-2.952,-2.965,-2.98,-2.998,-3.018,-3.039,-3.06,-3.082,-3.104,-3.125,-3.145,-3.163,-3.179,-3.194,-3.206,-3.216,-3.224,-3.229,-3.232,-3.233,-3.231,-3.227,-3.221,-3.213,-3.204,-3.193,-3.182,-3.17,-3.157,-3.145,-3.133,-3.121,-3.11,-3.1,-3.092,-3.086,-3.081,-3.079,-3.079,-3.082,-3.087,-3.095,-3.107,-3.12,-3.137,-3.157,-3.179,-3.204,-3.231,-3.261,-3.292,-3.326,-3.361,-3.397,-3.434,-3.472,-3.511,-3.55,-3.588,-3.627,-3.664,-3.701,-3.737,-3.771,-3.804,-3.835,-3.865,-3.893,-3.919,-3.942,-3.964,-3.984,-4.002,-4.018,-4.032,-4.044,-4.055,-4.064,-4.071,-4.078,-4.083,-4.087,-4.09,-4.093,-4.095,-4.096,-4.097,-4.098,-4.098,-4.098,-4.098,-4.098,-4.098]],"body":[[0.243,-0.991,0.834,-0.331,2.055,-2.684,1.647,1.512,-0.004,-0.001,-0.664,2.479,-3.117,1.165,0.285,0.36,1.707,2.457,0.145,-0.096,-0.78,1.063,0.841,3.854,-2.207,0.297,2.176,-0.371,-0.326,1.608,-0.37,0.537,-0.024,-1.722,1.776,-3.075,3.763,-2.204,-0.004,0.973,-2.214,0.595,-3.112,-0.063,1.363,-0.224,-0.152,-1.541,-1.501,-0.263,-0.243,-0.906,-0.387,-0.617,-1.711,-1.87,-0.77,0.092,-0.123,1.622,-0.39,1.4,0.37,0.318,-2.395,-1.621,2.639,-1.859,-0.245,0.949,0.642,-1.348,0.985,1.905,-0.504,0.813,2.507,1.54,3.165,1.145,0.47,2.39,-3.934,3.769,-2.457,0.446,1.224,-0.39,-0.541,0.362,-2.489,0.057,-0.172,-1.663,0.822,-1.038,0.725,0.035,-1.804,-0.279,-0.276,-0.838,-0.192,-2.083,-1.524,-0.989,-2.493,1.491,0.172,-0.725,0.962,-1.367,0.52,1.814,0.545,0.397,1.46,-0.328,3.644,-0.141,1.875,2.526,0.43,0.735,3.953],[0.695,1.548,-1.429,-1.566,-0.154,0.041,0.152,-1.638,-1.088,-1.603,-3.457,-1.588,-0.838,-1.475,-1.459,-2.431,2.294,-1.111,-2.295,-1.996,-2.86,-0.944,-0.819,-0.319,-3.346,-4.159,2.719,-2.464,0.46,-0.382,-1.079,1.245,-2.153,-0.595,0.099,-0.297,0.738,0.876,-0.774,1.988,-0.168,2.379,0.716,3.933,2.005,2.653,2.481,3.75,1.865,1.975,2.967,1.081,1.079,2.022,2.095,2.206,0.675,0.264,0.808,2.403,2.342,0.667,-0.959,-0.279,1.565,0.606,-1.295,-3.44,-1.618,-2.388,-2.69,-0.085,-1.553,-1.35,-2.792,0.603,1.017,-4.029,-1.849,-1.756,0.113,1.601,-2.081,-0.56,-5.72,-1.47,0.765,0.347,-0.82,-1.356,-0.273,-2.283,1.43,0.043,-0.297,0.926,1.499,1.67,2.884,1.467,3.42,1.391,1.895,2.017,1.112,1.722,-0.0,0.396,0.606,1.243,2.192,1.291,-0.42,3.04,1.319,-1.992,-0.634,-2.261,0.917,-2.951,-0.728,1.058,-4.626,-2.028,-2.775],[0.243,2.2,15.449,7.816,4.759,3.099,5.189,4.544,2.573,4.387,4.346,3.79,3.435,3.495,1.091,3.199,2.149,4.52,5.661,3.908,5.396,0.902,0.08,3.528,4.01,1.739,-0.531,-2.513,0.382,-2.595,-0.9,0.303,-3.196,2.753,-4.285,-1.386,-4.87,-2.067,-2.813,-3.017,0.866,-4.31,-2.889,-5.751,0.466,-2.221,-3.07,-3.635,-3.085,-3.27,-0.739,-1.079,1.487,-2.618,-0.986,-1.667,-0.597,1.453,2.799,-1.815,0.993,0.767,5.35,0.829,0.84,-1.263,1.446,2.568,1.451,1.661,2.256,2.681,1.729,3.933,3.149,-0.863,2.285,4.199,4.054,2.647,1.699,0.676,-0.393,0.304,3.415,0.162,-2.243,0.426,-0.365,-1.27,1.524,-2.886,-0.425,-1.804,-5.457,-2.254,-2.674,-2.838,-3.525,-4.166,-2.469,0.96,-5.871,-1.405,-0.853,-3.279,-0.585,-0.991,-0.337,0.238,-0.7,4.238,2.365,5.566,2.408,-0.454,6.116,-2.804,-1.48,2.967,2.692,2.215,4.296,2.71,4.361]],"jerkmag":[0.0,121.119,468.218,519.088,142.478,165.605,42.099,211.44,58.682,139.113,225.157,164.665,182.875,135.978,128.624,104.215,248.418,199.442,144.184,117.449,124.734,32.485,206.511,126.039,222.445,147.122,253.523,137.605,187.329,140.715,117.88,57.838,149.63,261.689,189.959,237.661,228.622,166.679,67.254,101.757,453.614,163.03,119.087,176.142,254.082,479.472,252.491,116.192,81.927,173.218,167.579,80.815,159.29,174.282,100.803,100.361,197.963,133.705,216.399,217.956,186.428,192.445,378.121,140.412,157.483,154.524,148.092,131.078,181.75,108.577,106.073,152.843,101.096,302.147,78.402,236.729,93.208,286.637,163.216,148.124,264.025,139.999,370.585,328.324,189.556,184.689,44.798,89.273,93.626,155.524,212.261,176.518,109.678,168.788,179.783,111.787,51.309,108.745,103.27,47.125,171.268,340.239,247.809,137.466,162.78,200.334,143.587,90.784,155.924,134.364,112.965,298.859,215.684,245.829,617.401,302.071,306.785,217.871,588.877,80.213,33.767,61.684,306.899,123.105,279.969],"feats":{"sma":13.85,"body_energy":16.92,"jerk_energy":46950.0,"tilt":-0.386,"grav_mag_std":0.2921}}},"top20":[{"f":"ankle_ay_median","v":0.0343},{"f":"ankle_az_std","v":0.0303},{"f":"ankle_gyro_dgyro_energy","v":0.0284},{"f":"ankle_acc_sma","v":0.0282},{"f":"ankle_ay_mean","v":0.0276},{"f":"chest_az_std","v":0.0262},{"f":"chest_ax_rms","v":0.0257},{"f":"ankle_gyro_angmot_std","v":0.0251},{"f":"chest_ax_mean","v":0.0249},{"f":"chest_ax_max","v":0.0224},{"f":"chest_az_rms","v":0.0221},{"f":"chest_ax_q25","v":0.0218},{"f":"ankle_az_rms","v":0.0212},{"f":"chest_ax_std","v":0.0206},{"f":"ankle_gyro_dgyro_z_std","v":0.0192},{"f":"ankle_acc_grav_mag_mean","v":0.0176},{"f":"arm_acc_jerk_y_std","v":0.0174},{"f":"arm_ay_q25","v":0.0168},{"f":"ankle_ax_std","v":0.0157},{"f":"arm_ay_q75","v":0.0155}],"meta":{"windows":1335,"channels":15,"nfeat":197,"nstat":135,"nphys":62,"pruned":72,"oof_acc":0.964,"oof_f1":0.9665,"oof_prec":0.981,"oof_rec":0.98,"ms_per_window":0.37,"subjects":10,"fs":50,"winsec":5,"nested":true}};
+
+/* ---------------- helpers ---------------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const el=(t,c,h)=>{const n=document.createElement(t); if(c)n.className=c; if(h!=null)n.innerHTML=h; return n;};
+const fx=(v,d=3)=>Number(v).toFixed(d);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function pathFrom(vals, w, h, pad=4, lo, hi){
+  const mn = lo!=null?lo:Math.min(...vals), mx = hi!=null?hi:Math.max(...vals);
+  const r = (mx-mn)||1, n = vals.length;
+  return vals.map((v,i)=>{
+    const x = (i/(n-1))*w, y = h-pad - ((v-mn)/r)*(h-2*pad);
+    return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1);
+  }).join(" ");
+}
+function draw(svg, series, colors, h, unify){
+  svg.innerHTML="";
+  const w=600, flat=series.flat();
+  const lo = unify?Math.min(...flat):null, hi = unify?Math.max(...flat):null;
+  svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  svg.setAttribute("preserveAspectRatio","none");
+  series.forEach((s,i)=>{
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d", pathFrom(s,w,h,4,lo,hi));
+    p.setAttribute("stroke", colors[i]);
+    p.setAttribute("vector-effect","non-scaling-stroke");
+    svg.appendChild(p);
+    if(!reduced){
+      const L=p.getTotalLength();
+      p.style.strokeDasharray=L; p.style.strokeDashoffset=L;
+      const an=p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],
+                {duration:760, delay:i*70, easing:"cubic-bezier(.3,.7,.3,1)", fill:"forwards"});
+      an.onfinish=()=>{p.style.strokeDashoffset=0;};
+    }
+  });
+}
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------------- hero ---------------- */
+function hero(){
+  const svg=$("#heroTrace"), run=D.demo.running.raw;
+  const w=1000,h=118, flat=run.flat();
+  const lo=Math.min(...flat), hi=Math.max(...flat);
+  svg.innerHTML="";
+  [css("--ax"),css("--ay"),css("--az")].forEach((c,i)=>{
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",pathFrom(run[i],w,h,6,lo,hi));
+    p.setAttribute("stroke",c); p.setAttribute("opacity", i===1?"1":".55");
+    p.setAttribute("vector-effect","non-scaling-stroke");
+    svg.appendChild(p);
+    if(!reduced){
+      const L=p.getTotalLength();
+      p.style.strokeDasharray=L; p.style.strokeDashoffset=L;
+      const an=p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:1500,delay:180+i*130,easing:"cubic-bezier(.25,.7,.3,1)",fill:"forwards"});
+      an.onfinish=()=>{p.style.strokeDashoffset=0;};
+    }
+  });
+  const k=[["0.964","out-of-fold accuracy"],["0.967","macro F1"],["40","features kept"],["1,335","windows"],["0.37 ms","feature extraction"],["12","activities"]];
+  $("#kpis").innerHTML = k.map(([v,l])=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join("");
+}
+
+/* ---------------- pipeline ---------------- */
+const STEPS=[
+ ["Load MHEALTH","10 logs &#183; 1.22 M rows","Ten tab-separated logs, one per subject, are read into a single frame with a subject column attached. Twenty-three sensor channels plus a label, recorded at 50 Hz from Shimmer2 units on the chest, left ankle and right wrist."],
+ ["Data cleaning","drop NaN / inf","Non-finite samples are dropped outright rather than imputed &#8212; at 50 Hz a lost sample costs 20 ms of a 5-second window, and interpolating would invent motion that never happened."],
+ ["Remove label 0","null class discarded","Label 0 marks the gaps between scripted activities: the subject adjusting straps, walking to position, standing around. It is not a class, it is the absence of one."],
+ ["Select sensors","15 of 23 channels","Chest acceleration, ankle acceleration and gyroscope, wrist acceleration and gyroscope. ECG is dropped because it measures the heart, not the movement. Magnetometers are dropped because they read the room's magnetic field as much as the body's orientation."],
+ ["Window segmentation","250 samples &#183; 5 s &#183; no overlap","Windows never cross a label change or a recording break, so no window contains two activities. Non-overlapping windows keep train and test genuinely separate &#8212; overlap would place near-copies on both sides."],
+ ["Train / validation / test","three protocols","A stratified 60/20/20 random split, a subject-wise split (subjects 1&#8211;6 / 7&#8211;8 / 9&#8211;10), and ten-fold leave-one-subject-out. Only the last one turned out to discriminate."],
+ ["Normalise","fit on training data only","StandardScaler is fitted on training rows and applied to validation and test &#8212; separately for the raw CNN input and for the feature matrix. Fitting on everything would leak the test distribution into the scaler."],
+ ["Feature extraction","135 statistical + 62 physics","Computed on raw, unscaled signals. Gravity, tilt and jerk are physical quantities; per-channel z-scoring before extraction would destroy exactly the thing they measure."],
+ ["Feature analysis","redundancy &#183; importance &#183; selection","Any feature correlating above 0.95 with one already kept is dropped &#8212; 72 of 197 go. The survivors are ranked by random-forest Gini importance and swept at k = 10, 20, 40, 80."],
+ ["Classification","SVM &#183; forest &#183; MLP &#183; 1D CNN","An RBF support vector machine, a 300-tree random forest and a two-layer MLP on features, against a small three-block 1D convolutional network reading the raw 15-channel window."],
+ ["Evaluation","random &#183; subject-wise &#183; LOSO","The first two protocols saturate at 1.000 for every feature family. Leave-one-subject-out is the only one with enough spread to rank anything."],
+ ["Feature invariance","physics 0.754 &#183; statistical 0.876","Each feature is scored by how much its within-activity mean shifts across subjects. Physics features are measurably more stable, and the six most stable in the set are all physics."],
+ ["Efficiency","0.37 ms &#183; 0.24 ms","Feature extraction per window, then inference per window. The CNN needs 1.25 ms and a larger memory footprint for a worse cross-subject score."],
+ ["Final compact framework","40 features &#183; 0.964","A random forest on the forty highest-importance mixed features, refit on all ten subjects and saved with its scaler, column indices and feature names. The score it is quoted at comes from its ten leave-one-subject-out siblings, not from itself &#8212; once every subject is in the training set, there is nobody left to test on."],
+];
+function pipeline(){
+  const wrap=$("#pipe");
+  STEPS.forEach((s,i)=>{
+    const b=el("button","step",`<i>${String(i+1).padStart(2,"0")}</i><span><b>${s[0]}</b><em>${s[1]}</em></span>`);
+    b.type="button"; b.setAttribute("aria-pressed", i===0);
+    b.onclick=()=>{
+      [...wrap.children].forEach(c=>c.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true"); showStep(i);
+    };
+    wrap.appendChild(b);
+  });
+  showStep(0);
+}
+function showStep(i){
+  const s=STEPS[i], d=$("#stepDetail");
+  d.innerHTML=`<div class="eyebrow">Step ${String(i+1).padStart(2,"0")} &#183; ${s[1]}</div><h3>${s[0]}</h3><p>${s[2]}</p>`;
+  if(!reduced) d.animate([{opacity:0,transform:"translateY(4px)"},{opacity:1,transform:"none"}],{duration:260,easing:"ease-out"});
+}
+
+/* ---------------- signal lab ---------------- */
+let ACT="walking", AX=[true,true,true];
+const LANES=[
+  ["Raw acceleration","raw","ankle, m/s&#178;"],
+  ["Gravity component","grav","0.3 Hz low-pass"],
+  ["Body acceleration","body","raw &#8722; gravity"],
+];
+function lab(){
+  const seg=$("#actSeg");
+  Object.keys(D.demo).forEach(a=>{
+    const b=el("button",null,a); b.type="button"; b.dataset.act=a;
+    b.setAttribute("aria-pressed", a===ACT);
+    b.onclick=()=>{ACT=a; [...seg.children].forEach(c=>c.setAttribute("aria-pressed", c.dataset.act===a)); renderLab();};
+    seg.appendChild(b);
+  });
+  $("#axisSeg").querySelectorAll("button").forEach(b=>{
+    b.type="button";
+    b.onclick=()=>{
+      const i=+b.dataset.axis;
+      if(AX.filter(Boolean).length===1 && AX[i]) return;
+      AX[i]=!AX[i]; b.setAttribute("aria-pressed",AX[i]); renderLab();
+    };
+  });
+  const lanes=$("#lanes");
+  LANES.forEach(([t,k,note])=>{
+    lanes.appendChild(el("div","lane",
+      `<header><h4>${t}</h4><p>${note}</p></header><svg data-k="${k}"></svg>`));
+  });
+  lanes.appendChild(el("div","lane",
+    `<header><h4>Jerk magnitude</h4><p>d(body)/dt, magnitude</p></header><svg data-k="jerkmag"></svg>`));
+  renderLab();
+}
+function renderLab(){
+  const d=D.demo[ACT], cols=[css("--ax"),css("--ay"),css("--az")];
+  $("#lanes").querySelectorAll("svg").forEach(svg=>{
+    const k=svg.dataset.k;
+    if(k==="jerkmag") draw(svg,[d.jerkmag],[css("--accent")],78,true);
+    else{
+      const idx=[0,1,2].filter(i=>AX[i]);
+      draw(svg, idx.map(i=>d[k][i]), idx.map(i=>cols[i]), 78, true);
+    }
+  });
+  const f=d.feats, rows=[
+    ["signal magnitude area", f.sma, ""],
+    ["gravity magnitude, std", f.grav_mag_std, ""],
+    ["body accel energy", f.body_energy, ""],
+    ["jerk energy", f.jerk_energy, ""],
+    ["tilt angle, mean", f.tilt, " rad"],
+  ];
+  $("#readouts").innerHTML = rows.map(([l,v,u])=>
+    `<div class="ro"><span>${l}</span><b>${Number(v).toLocaleString()}${u}</b></div>`).join("");
+}
+
+/* ---------------- catalogue ---------------- */
+const KEPT=new Set(["ankle_ay_rms","ankle_acc_body_mag_energy","ankle_ay_median","ankle_ay_mean","ankle_gyro_dgyro_mag_std","ankle_acc_body_mag_mean","ankle_ay_q25","ankle_az_std","ankle_ay_std","ankle_gyro_dgyro_energy","ankle_acc_jerk_z_std","ankle_acc_jerk_mag_mean","ankle_gyro_dgyro_mag_mean","ankle_acc_body_mag_std","ankle_acc_sma","arm_ay_mean","ankle_acc_jerk_energy","ankle_acc_grav_mag_mean","arm_ay_q75","arm_acc_jerk_y_std","chest_acc_body_mag_mean","ankle_az_rms","arm_acc_jerk_mag_mean","arm_acc_tilt_mean","arm_ay_q25","ankle_gyro_dgyro_z_std","ankle_az_min","chest_acc_body_mag_energy","chest_ax_min","chest_az_mean","arm_az_median","arm_ay_std","arm_az_q25","ankle_acc_jerk_mag_std","chest_ax_q25","chest_ax_max","ankle_gyro_angmot_std","ankle_az_range","chest_az_min","chest_ax_mean"]);
+const keptCount = n => [...KEPT].filter(k=>k.includes(n)).length;
+function catalogue(){
+  const stats=["mean","std","min","max","range","median","q25","q75","rms"];
+  const accP=["signal magnitude area","gravity magnitude, mean / std","body magnitude, mean / std / energy","jerk per axis, std &#215;3","jerk magnitude, mean / std","jerk energy","tilt angle, mean / std"];
+  const gyrP=["signal magnitude area","gyro change per axis, std &#215;3","gyro-change magnitude, mean / std","gyro-change energy","angular motion, mean / std","angular-motion energy"];
+  const cats=[
+    ["Basic statistics","9 per channel &#215; 15 = 135", stats.map(s=>`<span class="tag">${s}</span>`).join(""),
+     "Computed on every sensor axis: chest acceleration, ankle acceleration and gyroscope, wrist acceleration and gyroscope."],
+    ["Physics, acceleration triads","14 &#215; 3 sites = 42", accP.map(s=>`<span class="tag hi">${s}</span>`).join(""),
+     "Gravity is separated with a third-order Butterworth low-pass at 0.3 Hz; body acceleration is the residual; jerk is its time derivative."],
+    ["Physics, gyroscope triads","10 &#215; 2 sites = 20", gyrP.map(s=>`<span class="tag hi">${s}</span>`).join(""),
+     "Angular motion is the norm of the rate-of-turn vector; gyro change is its derivative, which separates smooth rotation from abrupt reorientation."],
+    ["What the model kept","40 of 197", `<span class="tag hi">ankle &#183; ${keptCount("ankle")}</span><span class="tag hi">chest &#183; ${keptCount("chest")}</span><span class="tag hi">wrist &#183; ${keptCount("arm")}</span>`,
+     "The ankle dominates: it is the only site that distinguishes walking from stairs from cycling from running, because it moves through the largest arc."],
+  ];
+  $("#cats").innerHTML = cats.map(([h,n,tags,note])=>
+    `<div class="cat"><h3>${h}<em>${n}</em></h3><div class="tags">${tags}</div><p style="margin-top:10px;font-size:.85rem;color:var(--ink-3)">${note}</p></div>`).join("");
+}
+
+/* ---------------- bars ---------------- */
+function bars(node, rows, opts={}){
+  const max = opts.max ?? Math.max(...rows.map(r=>r.v));
+  const min = opts.min ?? 0;
+  node.innerHTML="";
+  rows.forEach((r,i)=>{
+    const b=el("div","bar"+(i===0&&opts.markTop?" top":""));
+    b.innerHTML=`<span class="lbl" title="${r.l}">${r.l}</span>
+      <span class="track"><span class="fill" style="background:${r.c||css("--accent")}"></span></span>
+      <span class="val">${r.t ?? fx(r.v,3)}</span>`;
+    node.appendChild(b);
+    const f=b.querySelector(".fill");
+    const pct = ((r.v-min)/((max-min)||1))*100;
+    // setTimeout, not rAF: rAF is paused in background tabs and the bars would stay empty
+    setTimeout(()=>{ f.style.width=Math.max(pct,1.5)+"%"; }, reduced?0:20+i*18);
+  });
+}
+const famOf = s => (/mixed|\+/.test(s)) ? css("--az") : (/physics/.test(s) ? css("--ax") : css("--ay"));
+
+function importance(){
+  bars($("#impBars"), D.top20.map(r=>({l:r.f, v:r.v, t:fx(r.v,4), c: /_(sma|grav|body|jerk|tilt|dgyro|angmot)/.test(r.f)?css("--ax"):css("--ay")})));
+}
+
+let MET="f1", MODEL="all";
+function ablation(){
+  const seg=(id,attr,cb)=>$(id).querySelectorAll("button").forEach(b=>{
+    b.type="button";
+    b.onclick=()=>{ $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true"); cb(b.dataset[attr]); };
+  });
+  seg("#metricSeg","m",v=>{MET=v; drawAb();});
+  seg("#modelSeg","model",v=>{MODEL=v; drawAb();});
+  drawAb();
+}
+function drawAb(){
+  let rows=D.ablation.filter(r=>MODEL==="all"||r.model===MODEL);
+  rows=rows.slice().sort((a,b)=>b[MET]-a[MET]);
+  const vals=rows.map(r=>r[MET]);
+  bars($("#abBars"), rows.map(r=>({
+    l:`${r.features} &#183; ${r.model==="RandomForest"?"forest":r.model}`,
+    v:r[MET], t:fx(r[MET],3), c:famOf(r.features)
+  })), {min:Math.min(...vals)*0.93, max:Math.max(...vals), markTop:true});
+}
+
+function splits(){
+  const f=D.splits;
+  const A=[
+    {l:"random split", v:1.000, t:"1.000", c:css("--ink-3")},
+    {l:"held-out subjects", v:1.000, t:"1.000", c:css("--ink-3")},
+    {l:"leave-one-subject-out", v:0.967, t:"0.967", c:css("--accent")},
+  ];
+  const cnnR=f.find(r=>r.model==="1D CNN"&&r.split==="random");
+  const cnnS=f.find(r=>r.model==="1D CNN"&&r.split==="subject-wise");
+  const B=[
+    {l:"random split", v:cnnR.f1, t:fx(cnnR.f1,3), c:css("--ink-3")},
+    {l:"held-out subjects", v:cnnS.f1, t:fx(cnnS.f1,3), c:css("--bad")},
+  ];
+  bars($("#splitA"), A, {min:.85, max:1});
+  bars($("#splitB"), B, {min:.85, max:1});
+}
+
+/* ---------------- invariance strip ---------------- */
+function strip(){
+  const host=$("#strip"), tip=$("#tip");
+  const W=1000,H=132, pad=26;
+  const vals=D.invariance.map(d=>d.s);
+  const lo=Math.min(...vals)-.03, hi=Math.max(...vals)+.03;
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.setAttribute("preserveAspectRatio","none");
+  [0.4,0.5,0.6,0.7,0.8,0.9,1.0].forEach(t=>{
+    const x=pad+((t-lo)/(hi-lo))*(W-2*pad);
+    const l=document.createElementNS("http://www.w3.org/2000/svg","line");
+    l.setAttribute("x1",x); l.setAttribute("x2",x); l.setAttribute("y1",8); l.setAttribute("y2",H-20);
+    l.setAttribute("stroke",css("--line")); l.setAttribute("stroke-width",".5");
+    svg.appendChild(l);
+    const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+    tx.setAttribute("x",x); tx.setAttribute("y",H-6); tx.setAttribute("text-anchor","middle");
+    tx.setAttribute("fill",css("--ink-3")); tx.setAttribute("font-size","9");
+    tx.setAttribute("font-family","IBM Plex Mono, monospace"); tx.textContent=t.toFixed(1);
+    svg.appendChild(tx);
+  });
+  D.invariance.forEach((d,i)=>{
+    const x=pad+((d.s-lo)/(hi-lo))*(W-2*pad);
+    const r=Math.sin(i*127.1+d.s*311.7)*43758.5453; const j=r-Math.floor(r);
+    const y=d.fam==="physics" ? 20+j*38 : 64+j*40;
+    const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",x); c.setAttribute("cy",y); c.setAttribute("r",3.2);
+    c.setAttribute("fill", d.fam==="physics"?css("--ax"):css("--ay"));
+    c.setAttribute("fill-opacity",".72");
+    c.addEventListener("pointerenter",e=>{
+      c.setAttribute("r",5.4); c.setAttribute("fill-opacity","1");
+      const r=host.getBoundingClientRect();
+      tip.textContent=`${d.f} &#183; ${d.s.toFixed(3)}`;
+      tip.style.left=(x/W*r.width)+"px"; tip.style.top=(y/H*r.height)+"px"; tip.style.opacity="1";
+    });
+    c.addEventListener("pointerleave",()=>{c.setAttribute("r",3.2); c.setAttribute("fill-opacity",".72"); tip.style.opacity="0";});
+    svg.appendChild(c);
+  });
+  host.insertBefore(svg, host.firstChild);
+}
+
+/* ---------------- confusion + tables ---------------- */
+function confusion(){
+  const {labels,m}=D.cm, n=labels.length;
+  const grid=el("div","cmgrid");
+  grid.style.gridTemplateColumns=`auto repeat(${n},minmax(28px,1fr))`;
+  const cells=[];
+  m.forEach((row,i)=>{
+    grid.appendChild(el("div","rowlab",labels[i]));
+    const tot=row.reduce((a,b)=>a+b,0);
+    row.forEach((v,j)=>{
+      const p=v/tot;
+      const c=el("div","cell"+(v===0?" z":""), v||"");
+      if(v){
+        // errors are rare, so a linear ramp makes them invisible: floor them and use sqrt
+        const a = i===j ? 0.20+0.80*p : Math.max(0.5, 0.45+0.55*Math.sqrt(p));
+        c.style.background = i===j ? css("--accent") : css("--bad");
+        c.style.opacity=a.toFixed(2);
+        c.style.color = a>0.62 ? css("--surface") : css("--ink");
+      }
+      c.title=`${labels[i]} to ${labels[j]}: ${v} windows (${(p*100).toFixed(1)}%)`;
+      c.dataset.i=i; c.dataset.j=j;
+      c.addEventListener("pointerenter",()=>{
+        cells.forEach(x=>x.classList.toggle("hot", +x.dataset.i===i || +x.dataset.j===j));
+        $("#cmHint").textContent = i===j
+          ? `${labels[i]} recognised: ${v} of ${tot} windows`
+          : `${labels[i]} predicted as ${labels[j]}: ${v} windows`;
+      });
+      c.addEventListener("pointerleave",()=>{
+        cells.forEach(x=>x.classList.remove("hot"));
+        $("#cmHint").textContent="rows: true \u00b7 columns: predicted";
+      });
+      cells.push(c); grid.appendChild(c);
+    });
+  });
+  grid.appendChild(el("div"));
+  labels.forEach(l=>grid.appendChild(el("div","collab",l)));
+  $("#cm").appendChild(grid);
+}
+function tables(){
+  const pc=D.perclass;
+  $("#pcTable").innerHTML =
+   `<thead><tr><th>activity</th><th>prec</th><th>recall</th><th>F1</th><th>n</th></tr></thead><tbody>`+
+   pc.map(r=>`<tr><td>${r.label}</td><td class="n">${fx(r.precision)}</td><td class="n">${fx(r.recall)}</td>
+     <td class="n" style="color:${r.f1===1?css("--good"):(r.f1<.95?css("--warn"):css("--ink"))}">${fx(r.f1)}</td>
+     <td class="n">${r.support}</td></tr>`).join("")+`</tbody>`;
+
+  bars($("#subjBars"), D.per_subject.map(s=>({
+    l:"subject "+s.subject, v:s.f1, t:fx(s.f1,3),
+    c: s.f1===1?css("--good"):(s.f1<.9?css("--warn"):css("--accent"))
+  })), {min:.82, max:1});
+
+  $("#effTable").innerHTML =
+   `<thead><tr><th>stage</th><th>cost</th><th>note</th></tr></thead><tbody>
+    <tr><td>Feature extraction, all 197</td><td class="n">0.37 ms</td><td style="text-align:left;color:var(--ink-3)">per 5 s window, CPU</td></tr>
+    <tr><td>Random forest inference</td><td class="n">0.24 ms</td><td style="text-align:left;color:var(--ink-3)">300 trees, 40 features</td></tr>
+    <tr><td>SVM inference</td><td class="n">0.06 ms</td><td style="text-align:left;color:var(--ink-3)">RBF, lower accuracy</td></tr>
+    <tr><td>1D CNN inference</td><td class="n">1.25 ms</td><td style="text-align:left;color:var(--ink-3)">15 &#215; 250 raw window</td></tr>
+    <tr><td>Final model on disk</td><td class="n">2.3 MB</td><td style="text-align:left;color:var(--ink-3)">forest + scaler + column index</td></tr>
+    <tr><td>Full pipeline run</td><td class="n">9.2 min</td><td style="text-align:left;color:var(--ink-3)">mostly the two CNN baselines</td></tr>
+   </tbody>`;
+}
+
+/* ---------------- nav + reveal ---------------- */
+function nav(){
+  const secs=[...document.querySelectorAll("section")];
+  const names={pipeline:"Pipeline",signals:"Signal lab",catalogue:"Feature set",importance:"Importance",
+    ablation:"Results",splits:"Protocol",invariance:"Invariance",leakage:"Validity checks",report:"Final report",efficiency:"Efficiency"};
+  $("#railList").innerHTML = secs.map((s,i)=>
+    `<li><a href="#${s.id}"><span>${String(i+1).padStart(2,"0")}</span>${names[s.id]||s.id}</a></li>`).join("");
+  const links=[...document.querySelectorAll(".rail a")];
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle("on", l.getAttribute("href")==="#"+e.target.id));
+    }});
+  },{rootMargin:"-20% 0px -70% 0px"});
+  secs.forEach(s=>io.observe(s));
+
+  const ro=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add("in"); ro.unobserve(e.target); }
+  }),{rootMargin:"0px 0px -8% 0px"});
+  document.querySelectorAll("section > .head, section > .panel, section > .callout, section > .cats, section > .pipe, section > .grid2, section > .strip")
+    .forEach(n=>{ n.classList.add("reveal"); ro.observe(n); });
+}
+
+hero(); pipeline(); lab(); catalogue(); importance(); ablation(); splits(); strip(); confusion(); tables(); nav();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{
+  renderLab(); importance(); drawAb(); splits();
+});
+</script>
