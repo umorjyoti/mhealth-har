@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# dataset — download separately, see README
+MHEALTHDATASET/
+
+# regenerable artefacts
+results/windows.npz
+results/final_model.pkl
+results/run.log

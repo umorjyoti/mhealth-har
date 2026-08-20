@@ -1,0 +1,13 @@
+,standing,sitting,lying,walking,stairs,waist_bend,arm_elevation,knee_bend,cycling,jogging,running,jump
+standing,24,0,0,0,0,0,0,0,0,0,0,0
+sitting,0,24,0,0,0,0,0,0,0,0,0,0
+lying,0,0,24,0,0,0,0,0,0,0,0,0
+walking,0,0,0,24,0,0,0,0,0,0,0,0
+stairs,0,0,0,0,24,0,0,0,0,0,0,0
+waist_bend,0,0,0,0,0,20,0,0,0,0,0,0
+arm_elevation,0,0,0,0,0,0,22,0,0,0,0,0
+knee_bend,0,0,0,0,0,0,0,22,0,0,0,0
+cycling,0,0,0,0,0,0,0,0,24,0,0,0
+jogging,0,0,0,0,0,0,0,0,0,24,0,0
+running,0,0,0,0,0,0,0,0,0,0,24,0
+jump,0,0,0,0,0,0,0,0,0,0,0,8

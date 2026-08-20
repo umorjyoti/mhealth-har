@@ -1,0 +1,18 @@
+               precision    recall  f1-score   support
+
+     standing       1.00      1.00      1.00        24
+      sitting       1.00      1.00      1.00        24
+        lying       1.00      1.00      1.00        24
+      walking       1.00      1.00      1.00        24
+       stairs       1.00      1.00      1.00        24
+   waist_bend       1.00      1.00      1.00        20
+arm_elevation       1.00      1.00      1.00        22
+    knee_bend       1.00      1.00      1.00        22
+      cycling       1.00      1.00      1.00        24
+      jogging       1.00      1.00      1.00        24
+      running       1.00      1.00      1.00        24
+         jump       1.00      1.00      1.00         8
+
+     accuracy                           1.00       264
+    macro avg       1.00      1.00      1.00       264
+ weighted avg       1.00      1.00      1.00       264

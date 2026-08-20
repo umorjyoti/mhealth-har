@@ -1,0 +1,343 @@
+{
+  "random": {
+    "n_features": 197,
+    "n_after_prune": 127,
+    "n_dropped_redundant": 70,
+    "best_k": 20,
+    "top20": [
+      {
+        "feature": "ankle_ay_q25",
+        "importance": 0.032835888918937246
+      },
+      {
+        "feature": "ankle_ay_mean",
+        "importance": 0.03260446724592482
+      },
+      {
+        "feature": "ankle_gyro_dgyro_energy",
+        "importance": 0.03126303910174389
+      },
+      {
+        "feature": "ankle_ay_median",
+        "importance": 0.028163410460133487
+      },
+      {
+        "feature": "ankle_az_range",
+        "importance": 0.025313328068236676
+      },
+      {
+        "feature": "chest_ax_std",
+        "importance": 0.02509197419802253
+      },
+      {
+        "feature": "ankle_az_rms",
+        "importance": 0.023606665696859683
+      },
+      {
+        "feature": "ankle_gyro_dgyro_z_std",
+        "importance": 0.022474370594767663
+      },
+      {
+        "feature": "ankle_acc_sma",
+        "importance": 0.022048867568843306
+      },
+      {
+        "feature": "chest_ax_mean",
+        "importance": 0.021761307353682084
+      },
+      {
+        "feature": "ankle_acc_grav_mag_mean",
+        "importance": 0.020680518330159516
+      },
+      {
+        "feature": "chest_ax_max",
+        "importance": 0.02018134266387258
+      },
+      {
+        "feature": "chest_ax_rms",
+        "importance": 0.018942740900196504
+      },
+      {
+        "feature": "arm_acc_jerk_y_std",
+        "importance": 0.01892725070567845
+      },
+      {
+        "feature": "ankle_az_min",
+        "importance": 0.018376035380246646
+      },
+      {
+        "feature": "chest_ax_q25",
+        "importance": 0.01797851113175528
+      },
+      {
+        "feature": "arm_ay_std",
+        "importance": 0.017197608147975642
+      },
+      {
+        "feature": "ankle_gyro_angmot_std",
+        "importance": 0.016957546996396722
+      },
+      {
+        "feature": "arm_ay_q25",
+        "importance": 0.016922094969270177
+      },
+      {
+        "feature": "chest_az_std",
+        "importance": 0.016699804810202164
+      }
+    ],
+    "selected": [
+      "ankle_ay_q25",
+      "ankle_ay_mean",
+      "ankle_gyro_dgyro_energy",
+      "ankle_ay_median",
+      "ankle_az_range",
+      "chest_ax_std",
+      "ankle_az_rms",
+      "ankle_gyro_dgyro_z_std",
+      "ankle_acc_sma",
+      "chest_ax_mean",
+      "ankle_acc_grav_mag_mean",
+      "chest_ax_max",
+      "chest_ax_rms",
+      "arm_acc_jerk_y_std",
+      "ankle_az_min",
+      "chest_ax_q25",
+      "arm_ay_std",
+      "ankle_gyro_angmot_std",
+      "arm_ay_q25",
+      "chest_az_std"
+    ]
+  },
+  "subject-wise": {
+    "n_features": 197,
+    "n_after_prune": 125,
+    "n_dropped_redundant": 72,
+    "best_k": 125,
+    "top20": [
+      {
+        "feature": "ankle_ay_median",
+        "importance": 0.03426393550548346
+      },
+      {
+        "feature": "ankle_az_std",
+        "importance": 0.030322689033977442
+      },
+      {
+        "feature": "ankle_gyro_dgyro_energy",
+        "importance": 0.028380431468560865
+      },
+      {
+        "feature": "ankle_acc_sma",
+        "importance": 0.028220206721280637
+      },
+      {
+        "feature": "ankle_ay_mean",
+        "importance": 0.02761893141474375
+      },
+      {
+        "feature": "chest_az_std",
+        "importance": 0.02619721589506069
+      },
+      {
+        "feature": "chest_ax_rms",
+        "importance": 0.02565462086947501
+      },
+      {
+        "feature": "ankle_gyro_angmot_std",
+        "importance": 0.025056161794562187
+      },
+      {
+        "feature": "chest_ax_mean",
+        "importance": 0.024898220506879242
+      },
+      {
+        "feature": "chest_ax_max",
+        "importance": 0.022423200178777292
+      },
+      {
+        "feature": "chest_az_rms",
+        "importance": 0.022063345060647485
+      },
+      {
+        "feature": "chest_ax_q25",
+        "importance": 0.021830840568201587
+      },
+      {
+        "feature": "ankle_az_rms",
+        "importance": 0.021195776049672
+      },
+      {
+        "feature": "chest_ax_std",
+        "importance": 0.02059978662323024
+      },
+      {
+        "feature": "ankle_gyro_dgyro_z_std",
+        "importance": 0.01919552099364914
+      },
+      {
+        "feature": "ankle_acc_grav_mag_mean",
+        "importance": 0.01761670266947608
+      },
+      {
+        "feature": "arm_acc_jerk_y_std",
+        "importance": 0.017382259247884422
+      },
+      {
+        "feature": "arm_ay_q25",
+        "importance": 0.016785456123415823
+      },
+      {
+        "feature": "ankle_ax_std",
+        "importance": 0.015652703226428498
+      },
+      {
+        "feature": "arm_ay_q75",
+        "importance": 0.01547857819551955
+      }
+    ],
+    "selected": [
+      "ankle_ay_median",
+      "ankle_az_std",
+      "ankle_gyro_dgyro_energy",
+      "ankle_acc_sma",
+      "ankle_ay_mean",
+      "chest_az_std",
+      "chest_ax_rms",
+      "ankle_gyro_angmot_std",
+      "chest_ax_mean",
+      "chest_ax_max",
+      "chest_az_rms",
+      "chest_ax_q25",
+      "ankle_az_rms",
+      "chest_ax_std",
+      "ankle_gyro_dgyro_z_std",
+      "ankle_acc_grav_mag_mean",
+      "arm_acc_jerk_y_std",
+      "arm_ay_q25",
+      "ankle_ax_std",
+      "arm_ay_q75",
+      "chest_ax_q75",
+      "chest_az_min",
+      "ankle_ay_max",
+      "arm_ay_std",
+      "ankle_ay_q75",
+      "chest_az_q75",
+      "ankle_az_min",
+      "arm_ay_mean",
+      "arm_ax_std",
+      "ankle_az_q25",
+      "ankle_az_mean",
+      "arm_ay_min",
+      "arm_acc_jerk_z_std",
+      "arm_az_mean",
+      "arm_az_q25",
+      "chest_ax_min",
+      "chest_ax_median",
+      "arm_acc_body_mag_std",
+      "ankle_ay_min",
+      "arm_gyro_dgyro_energy",
+      "arm_gx_std",
+      "arm_ay_max",
+      "ankle_gz_std",
+      "arm_ay_median",
+      "chest_acc_sma",
+      "arm_az_range",
+      "arm_gy_std",
+      "chest_az_mean",
+      "chest_az_range",
+      "arm_acc_jerk_x_std",
+      "arm_az_q75",
+      "chest_ay_rms",
+      "arm_az_rms",
+      "arm_ax_mean",
+      "arm_az_std",
+      "ankle_az_max",
+      "chest_ay_std",
+      "arm_ay_rms",
+      "arm_acc_sma",
+      "ankle_gx_std",
+      "arm_ax_q25",
+      "ankle_gyro_dgyro_x_std",
+      "chest_acc_jerk_y_std",
+      "ankle_ax_rms",
+      "arm_acc_grav_mag_mean",
+      "ankle_ax_min",
+      "ankle_gy_std",
+      "chest_acc_grav_mag_mean",
+      "chest_ay_min",
+      "ankle_az_q75",
+      "arm_acc_grav_mag_std",
+      "ankle_ax_max",
+      "arm_gyro_dgyro_z_std",
+      "arm_az_max",
+      "arm_gz_std",
+      "chest_az_max",
+      "ankle_gx_max",
+      "chest_ay_q75",
+      "arm_ax_min",
+      "arm_ax_q75",
+      "arm_gyro_dgyro_y_std",
+      "arm_gy_max",
+      "ankle_ax_q75",
+      "ankle_gx_mean",
+      "arm_ax_max",
+      "arm_gy_mean",
+      "arm_gyro_dgyro_x_std",
+      "ankle_gyro_dgyro_y_std",
+      "arm_gyro_angmot_std",
+      "ankle_gyro_sma",
+      "chest_acc_grav_mag_std",
+      "arm_gyro_angmot_mean",
+      "chest_acc_tilt_std",
+      "ankle_ax_q25",
+      "arm_acc_tilt_std",
+      "ankle_gx_min",
+      "chest_ay_q25",
+      "chest_ay_max",
+      "arm_gy_min",
+      "ankle_gz_min",
+      "ankle_gz_max",
+      "ankle_gz_rms",
+      "ankle_ax_mean",
+      "ankle_gyro_angmot_mean",
+      "ankle_gy_max",
+      "arm_az_min",
+      "arm_gz_rms",
+      "ankle_gz_mean",
+      "ankle_gz_q75",
+      "chest_ay_mean",
+      "arm_gx_max",
+      "ankle_gy_rms",
+      "arm_gy_rms",
+      "arm_gyro_sma",
+      "arm_gx_min",
+      "arm_gx_rms",
+      "ankle_acc_grav_mag_std",
+      "ankle_acc_tilt_std",
+      "arm_gz_min",
+      "ankle_gy_mean",
+      "arm_gz_max",
+      "arm_gx_mean",
+      "ankle_gx_rms",
+      "arm_gz_mean",
+      "ankle_gy_min"
+    ]
+  },
+  "efficiency": {
+    "feature_extraction_ms_per_window": 0.9258448854367831,
+    "total_runtime_s": 551.522176027298
+  },
+  "best_config": {
+    "model": "SVM",
+    "features": "stat-only",
+    "n_feat": 135,
+    "subjectwise_f1": 1.0,
+    "loso_mean": {
+      "accuracy": 0.9413179470904638,
+      "precision": 0.9404415437503673,
+      "recall": 0.941025641025641,
+      "f1": 0.9343415964865874
+    }
+  }
+}

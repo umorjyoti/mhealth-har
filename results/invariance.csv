@@ -1,0 +1,17 @@
+features,model,random,subject-wise,drop
+physics-only,MLP,0.9543214457500172,0.9555555555555556,-0.001234109805538397
+physics-only,RandomForest,0.996526270082501,0.996526270082501,0.0
+physics-only,SVM,1.0,1.0,0.0
+raw signal,1D CNN,0.996526270082501,0.8832104832104832,0.11331578687201782
+selected-top125,MLP,,0.9963750985027581,
+selected-top125,RandomForest,,1.0,
+selected-top125,SVM,,1.0,
+selected-top20,MLP,0.9684550132109582,,
+selected-top20,RandomForest,0.996526270082501,,
+selected-top20,SVM,1.0,,
+stat+physics,MLP,0.9718184070357984,1.0,-0.02818159296420164
+stat+physics,RandomForest,1.0,1.0,0.0
+stat+physics,SVM,1.0,1.0,0.0
+stat-only,MLP,0.9930525401650021,0.9847321855571497,0.00832035460785241
+stat-only,RandomForest,1.0,0.9960294951786727,0.003970504821327325
+stat-only,SVM,1.0,1.0,0.0
